@@ -415,7 +415,7 @@ begin
   if (fromY < toY) then
     ystep := 1
   else
-    ystep := 1;
+    ystep := -1;
 
   state := 0;
   xlimit := (toX + xstep);
