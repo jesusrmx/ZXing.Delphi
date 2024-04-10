@@ -38,6 +38,8 @@ The standard camera component is, I think too slow for Android and IOS. You need
 	
 
 ### Changes
+- v3.9.12
+	Fixed a bug in Bresenham's line algorithm
 - v3.9.11
 	Usage of FRAMEWORK_FMX and FRAMEWORK_VCL. See 'Usage' below.
 - v3.9.8
