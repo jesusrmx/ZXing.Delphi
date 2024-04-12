@@ -175,24 +175,13 @@ begin
     ((tltrCentersDimension + tlblCentersDimension), 1) + 7;
 
   case (dimension and 3) of
-    0:
-      begin
-        inc(dimension);
-      end;
-    2:
-      begin
-        dec(dimension);
-      end;
-    3:
-      begin
-        begin
-          Result := true;
-          exit
-        end
-      end;
+    0: inc(dimension); // below a valid dimension
+    1: ; // exactly on a valid dimension e.g. 21, 25, 29, ..., 177
+    2: dec(dimension); // above a valid dimension
+    3: Exit(False); // exactly between two valid dimensions
   end;
 
-  Result := true;
+  Result := True;
 end;
 
 class function TDetector.createTransform(const topLeft, topRight, bottomLeft,
