@@ -454,34 +454,35 @@ end;
 function TDetector.sizeOfBlackWhiteBlackRunBothWays(fromX: Integer;
   fromY: Integer; toX: Integer; toY: Integer): Single;
 var
-  scale, otherToX, otherToY: Integer;
+  scale: Double;
+  otherToX, otherToY: Integer;
 begin
-  Result := self.sizeOfBlackWhiteBlackRun(fromX, fromY, toX, toY);
+  Result := sizeOfBlackWhiteBlackRun(fromX, fromY, toX, toY);
   scale := 1;
   otherToX := (fromX - (toX - fromX));
   if (otherToX < 0) then
   begin
-    scale := (fromX div (fromX - otherToX));
+    scale := (fromX / (fromX - otherToX));
     otherToX := 0
   end
   else if (otherToX >= FImage.Width) then
   begin
-    scale := (((FImage.Width - 1) - fromX) div (otherToX - fromX));
+    scale := (((FImage.Width - 1) - fromX) / (otherToX - fromX));
     otherToX := (FImage.Width - 1)
   end;
-  otherToY := (fromY - ((toY - fromY) * scale));
+  otherToY := Round(fromY - ((toY - fromY) * scale));
   scale := 1;
   if (otherToY < 0) then
   begin
-    scale := fromY div (fromY - otherToY);
+    scale := fromY / (fromY - otherToY);
     otherToY := 0
   end
   else if (otherToY >= FImage.Height) then
   begin
-    scale := (((FImage.Height - 1) - fromY) div (otherToY - fromY));
+    scale := (((FImage.Height - 1) - fromY) / (otherToY - fromY));
     otherToY := (FImage.Height - 1)
   end;
-  otherToX := (fromX + (otherToX - fromX) * scale);
+  otherToX := Round(fromX + (otherToX - fromX) * scale);
   Result := Result + self.sizeOfBlackWhiteBlackRun(fromX, fromY, otherToX,
     otherToY);
 
