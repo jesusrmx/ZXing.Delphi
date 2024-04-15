@@ -38,6 +38,9 @@ The standard camera component is, I think too slow for Android and IOS. You need
 	
 
 ### Changes
+- v3.9.13
+	QR code: Fixed compute dimensions and more accurate results of sizeOfBlackWhiteBlackRunBothWays if outside of image (Thanks ImperatorZurg)
+replaced integer division with floating point division
 - v3.9.12
 	Fixed a bug in Bresenham's line algorithm
 - v3.9.11
