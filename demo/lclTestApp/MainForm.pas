@@ -3,7 +3,7 @@ unit MainForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, LazUTF8,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, FileUtil,
   Controls, Forms, Dialogs, StdCtrls, ExtCtrls;
 
 type
@@ -39,9 +39,9 @@ var  ReadResult: TReadResult;
      bmp:Graphics.TBitmap; // just to be sure we are really using VCL bitmaps
      aFile: string;
 begin
-  aFile := ExpandFileName('../
-  if not OpenDlg.Execute then exit;
-  image.Picture.LoadFromFile(openDlg.FileName);
+  aFile := ExpandFileName(ProgramDirectoryWithBundle + '../../UnitTest/Images/EAN_8690504009085-v2.png');
+  image.Picture.LoadFromFile(aFile);
+  //image.Picture.LoadFromFile(openDlg.FileName);
   ReadResult := nil;
   ScanManager := nil;
   bmp := nil;
