@@ -1,0 +1,65 @@
+object mainFrm: TmainFrm
+  Left = 179
+  Height = 872
+  Top = 6
+  Width = 1288
+  Caption = 'mainFrm'
+  ClientHeight = 872
+  ClientWidth = 1288
+  Color = clBtnFace
+  Font.Color = clWindowText
+  Font.Height = -22
+  Font.Name = 'Tahoma'
+  LCLVersion = '3.99.0.0'
+  object image: TImage
+    Left = 0
+    Height = 790
+    Top = 0
+    Width = 906
+    Align = alClient
+    AutoSize = True
+    Center = True
+    Proportional = True
+    Stretch = True
+  end
+  object Splitter_38A8D14A: TSplitter
+    Left = 906
+    Height = 790
+    Top = 0
+    Width = 6
+    Align = alRight
+    ResizeAnchor = akRight
+  end
+  object Log: TMemo
+    Left = 912
+    Height = 790
+    Top = 0
+    Width = 376
+    Align = alRight
+    TabOrder = 0
+  end
+  object bottomPanel: TPanel
+    Left = 0
+    Height = 82
+    Top = 790
+    Width = 1288
+    Align = alBottom
+    ClientHeight = 82
+    ClientWidth = 1288
+    ParentBackground = False
+    TabOrder = 1
+    object btnLoadFromFile: TButton
+      Left = 16
+      Height = 50
+      Top = 12
+      Width = 150
+      Caption = 'btnLoad'
+      TabOrder = 0
+      OnClick = btnLoadFromFileClick
+    end
+  end
+  object openDlg: TOpenDialog
+    Left = 80
+    Top = 328
+  end
+end
