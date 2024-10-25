@@ -20,6 +20,8 @@
 
 unit ZXing.QrCode.Internal.DataMask;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 

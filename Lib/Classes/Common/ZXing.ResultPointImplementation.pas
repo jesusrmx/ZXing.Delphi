@@ -1,7 +1,7 @@
 unit ZXing.ResultPointImplementation;
 
 interface
-uses system.SysUtils, 
+uses SysUtils, 
      ZXing.ResultPoint;
 
 type
@@ -12,7 +12,7 @@ type
   // it implements. It is exposed in the interface section just to allow the declaration of its derived classes
   /// </summary>
   TResultPoint = class(TInterfacedObject,IResultPoint)
-  private type
+  protected type
     TSingleArray = array [0 .. Pred(SizeOf(Single))] of Byte;
   var
     Fx, Fy: Single;
@@ -36,11 +36,11 @@ type
     destructor Destroy; override;
 
     /// <summary>
-    /// Determines whether the specified <see cref="System.TObject"/> is equal to this instance.
+    /// Determines whether the specified <see cref="TObject"/> is equal to this instance.
     /// </summary>
-    /// <param name="other">The <see cref="System.TObject"/> to compare with this instance.</param>
+    /// <param name="other">The <see cref="TObject"/> to compare with this instance.</param>
     /// <returns>
-    /// <c>true</c> if the specified <see cref="System.TObject"/> is equal to this instance; otherwise, <c>false</c>.
+    /// <c>true</c> if the specified <see cref="TObject"/> is equal to this instance; otherwise, <c>false</c>.
     /// </returns>
     function Equals(other: TObject): Boolean; override;
     /// <summary>
@@ -51,10 +51,10 @@ type
     /// </returns>
     function GetHashCode(): Integer; override;
     /// <summary>
-    /// Returns a <see cref="System.String"/> that represents this instance.
+    /// Returns a <see cref="String"/> that represents this instance.
     /// </summary>
     /// <returns>
-    /// A <see cref="System.String"/> that represents this instance.
+    /// A <see cref="String"/> that represents this instance.
     /// </returns>
     function ToString(): String; override;
 

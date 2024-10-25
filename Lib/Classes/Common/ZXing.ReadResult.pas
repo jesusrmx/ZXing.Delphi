@@ -18,11 +18,14 @@
 }
 unit ZXing.ReadResult;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  SysUtils,
   Generics.Collections,
+  ZXIng.Common.Types,
   ZXing.ResultPoint,
   ZXing.ResultMetadataType,
   ZXing.BarcodeFormat,
@@ -66,7 +69,7 @@ type
     FText: string;
     FTimeStamp: TDateTime;
     FResultMetadata: TResultMetaData;
-    FRawBytes: TArray<Byte>;
+    FRawBytes: TBytesArray;
     FResultPoints: TArray<IResultPoint>;
     FFormat: TBarcodeFormat;
 
@@ -80,7 +83,7 @@ type
     /// <param name="rawBytes">The raw bytes.</param>
     /// <param name="resultPoints">The result points.</param>
     /// <param name="format">The format.</param>
-    constructor Create(const text: string; const rawBytes: TArray<Byte>;
+    constructor Create(const text: string; const rawBytes: TBytesArray;
       const resultPoints: TArray<IResultPoint>;
       const format: TBarcodeFormat); overload;
 
@@ -92,7 +95,7 @@ type
     /// <param name="resultPoints">The result points.</param>
     /// <param name="format">The format.</param>
     /// <param name="timestamp">The timestamp.</param>
-    constructor Create(const text: string; const rawBytes: TArray<Byte>;
+    constructor Create(const text: string; const rawBytes: TBytesArray;
       const resultPoints: TArray<IResultPoint>; const format: TBarcodeFormat;
       const timeStamp: TDateTime); overload;
     destructor Destroy; override;
@@ -128,7 +131,7 @@ type
     property text: String read FText write SetText;
 
     /// <returns>raw bytes encoded by the barcode, if applicable, otherwise <code>null</code></returns>
-    property rawBytes: TArray<Byte> read FRawBytes write FRawBytes;
+    property rawBytes: TBytesArray read FRawBytes write FRawBytes;
 
     /// <returns>
     /// points related to the barcode in the image. These are typically points
@@ -243,13 +246,13 @@ end;
 
 { TReadResult }
 
-constructor TReadResult.Create(const text: String; const rawBytes: TArray<Byte>;
+constructor TReadResult.Create(const text: String; const rawBytes: TBytesArray;
   const resultPoints: TArray<IResultPoint>; const format: TBarcodeFormat);
 begin
   Self.Create(text, rawBytes, resultPoints, format, Now);
 end;
 
-constructor TReadResult.Create(const text: String; const rawBytes: TArray<Byte>;
+constructor TReadResult.Create(const text: String; const rawBytes: TBytesArray;
   const resultPoints: TArray<IResultPoint>; const format: TBarcodeFormat;
   const timeStamp: TDateTime);
 begin
@@ -328,10 +331,10 @@ begin
 end;
 
 /// <summary>
-/// Returns a <see cref="System.String"/> that represents this instance.
+/// Returns a <see cref="String"/> that represents this instance.
 /// </summary>
 /// <returns>
-/// A <see cref="System.String"/> that represents this instance.
+/// A <see cref="String"/> that represents this instance.
 /// </returns>
 function TReadResult.ToString(): String;
 begin

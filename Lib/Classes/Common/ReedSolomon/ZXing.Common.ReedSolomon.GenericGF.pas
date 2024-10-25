@@ -23,7 +23,10 @@ unit ZXing.Common.ReedSolomon.GenericGF;
 
 interface
 
-uses SysUtils;
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
+uses SysUtils,
+    ZXIng.Common.Types;
 
 type
   TGenericGF = class;
@@ -34,9 +37,9 @@ type
     function get_Degree: Integer;
     function get_isZero: boolean;
     function get_field: TGenericGF;
-    function get_coefficients: TArray<Integer>;
+    function get_coefficients: TIntArray;
 
-    property coefficients: TArray<Integer> read get_coefficients;
+    property coefficients: TIntArray read get_coefficients;
     property degree: Integer read get_Degree;
     property isZero: boolean read get_isZero;
     property Field: TGenericGF read get_field;
@@ -64,9 +67,9 @@ type
   /// </summary>
   TGenericGF = class sealed
   private
-    FexpTable: TArray<Integer>;
+    FexpTable: TIntArray;
     FGeneratorBase: Integer;
-    FlogTable: TArray<Integer>;
+    FlogTable: TIntArray;
     FZero: IGenericGFPoly;
     FOne: IGenericGFPoly;
     Fprimitive: Integer;
@@ -117,20 +120,20 @@ type
 
   TGenericGFPoly = class sealed(TInterfacedObject, IGenericGFPoly)
   private
-    Fcoefficients: TArray<Integer>;
+    Fcoefficients: TIntArray;
     Ffield: TGenericGF;
   public
     function get_Degree: Integer;
     function get_isZero: boolean;
     function get_field: TGenericGF;
-    function get_coefficients: TArray<Integer>;
+    function get_coefficients: TIntArray;
 
-    property coefficients: TArray<Integer> read get_coefficients;
+    property coefficients: TIntArray read get_coefficients;
     property degree: Integer read get_Degree;
     property isZero: boolean read get_isZero;
     property Field: TGenericGF read get_field;
 
-    constructor Create(Field: TGenericGF; coefficients: TArray<Integer>);
+    constructor Create(Field: TGenericGF; coefficients: TIntArray);
     destructor Destroy(); override;
     function addOrSubtract(other: IGenericGFPoly): IGenericGFPoly;
     function divide(other: IGenericGFPoly): TArray<IGenericGFPoly>;
@@ -183,8 +186,8 @@ begin
   Fsize := size;
 
   FGeneratorBase := genBase;
-  self.FexpTable := TArray<Integer>.Create();
-  self.FlogTable := TArray<Integer>.Create();
+  self.FexpTable := nil; //TIntArray.Create();
+  self.FlogTable := nil; //TIntArray.Create();
 
   SetLength(self.FexpTable, size);
   SetLength(self.FlogTable, size);
@@ -211,8 +214,8 @@ begin
     inc(i)
   end;
 
-  FZero := TGenericGFPoly.Create(self, TArray<Integer>.Create(0));
-  FOne := TGenericGFPoly.Create(self, TArray<Integer>.Create(1));
+  FZero := TGenericGFPoly.Create(self, TIntArray.Create(0));
+  FOne := TGenericGFPoly.Create(self, TIntArray.Create(1));
 end;
 
 destructor TGenericGF.Destroy;
@@ -229,7 +232,7 @@ end;
 
 function TGenericGF.buildMonomial(degree, coefficient: Integer): IGenericGFPoly;
 var
-  coefficients: TArray<Integer>;
+  coefficients: TIntArray;
 begin
   if (degree < 0) then
     raise EArgumentException.Create('Wrong argument');
@@ -240,7 +243,7 @@ begin
     exit
   end;
 
-  coefficients := TArray<Integer>.Create();
+  coefficients := nil; //TIntArray.Create();
   SetLength(coefficients, degree + 1);
   coefficients[0] := coefficient;
 
@@ -340,7 +343,7 @@ end;
 /// /////////////////////////////////////////////////////////////////////////////
 
 constructor TGenericGFPoly.Create(Field: TGenericGF;
-  coefficients: TArray<Integer>);
+  coefficients: TIntArray);
 var
   coefficientsLength, firstNonZero: Integer;
 
@@ -361,7 +364,7 @@ begin
       inc(firstNonZero)
     end;
 
-    Fcoefficients := TArray<Integer>.Create();
+    Fcoefficients := nil; //TIntArray.Create();
     if (firstNonZero = coefficientsLength) then
     begin
       SetLength(Fcoefficients, 1);
@@ -389,7 +392,7 @@ end;
 function TGenericGFPoly.addOrSubtract(other: IGenericGFPoly): IGenericGFPoly;
 var
   lengthDiff, i, y: Integer;
-  smallerCoefficients, largerCoefficients, temp, sumDiff: TArray<Integer>;
+  smallerCoefficients, largerCoefficients, temp, sumDiff: TIntArray;
 begin
 
   if (not self.Ffield.Equals(other.field)) then
@@ -417,7 +420,7 @@ begin
     largerCoefficients := temp
   end;
 
-  sumDiff := TArray<Integer>.Create();
+  sumDiff := nil; //TIntArray.Create();
   SetLength(sumDiff, Length(largerCoefficients));
   lengthDiff := Length(largerCoefficients) - Length(smallerCoefficients);
 
@@ -511,7 +514,7 @@ begin
   Result := Fcoefficients[Length(Fcoefficients) - 1 - degree]
 end;
 
-function TGenericGFPoly.get_coefficients: TArray<Integer>;
+function TGenericGFPoly.get_coefficients: TIntArray;
 begin
   Result := fcoefficients;
 end;
@@ -533,7 +536,7 @@ end;
 
 function TGenericGFPoly.multiply(other: IGenericGFPoly): IGenericGFPoly;
 var
-  product, aCoefficients, bCoefficients: TArray<Integer>;
+  product, aCoefficients, bCoefficients: TIntArray;
   aLength, bLength, i, aCoeff, j: Integer;
 begin
 
@@ -551,7 +554,7 @@ begin
   aLength := Length(aCoefficients);
   bCoefficients := other.coefficients;
   bLength := Length(bCoefficients);
-  product := TArray<Integer>.Create();
+  product := nil; //TIntArray.Create();
   SetLength(product, (aLength + bLength) - 1);
   i := 0;
 
@@ -574,7 +577,7 @@ end;
 
 function TGenericGFPoly.multiply(scalar: Integer): IGenericGFPoly;
 var
-  product: TArray<Integer>;
+  product: TIntArray;
   size, i: Integer;
 begin
 
@@ -591,7 +594,7 @@ begin
   end;
 
   size := Length(self.coefficients);
-  product := TArray<Integer>.Create();
+  product := nil; //TIntArray.Create();
   SetLength(product, size);
   i := 0;
   while ((i < size)) do
@@ -607,7 +610,7 @@ end;
 function TGenericGFPoly.multiplyByMonomial(degree, coefficient: Integer)
   : IGenericGFPoly;
 var
-  product: TArray<Integer>;
+  product: TIntArray;
   size, i: Integer;
 begin
   if (degree < 0) then
@@ -620,7 +623,7 @@ begin
   end;
 
   size := Length(self.coefficients);
-  product := TArray<Integer>.Create();
+  product := nil; //TIntArray.Create();
   SetLength(product, size + degree);
   i := 0;
 

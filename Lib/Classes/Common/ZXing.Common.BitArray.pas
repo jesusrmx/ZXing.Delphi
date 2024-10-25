@@ -19,7 +19,12 @@
 
 unit ZXing.Common.BitArray;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
+
+uses
+  ZXIng.Common.Types;
 
 type
   IBitArray = interface
@@ -27,13 +32,13 @@ type
      // property getters and setters
      function GetBit(i: Integer): Boolean;
      procedure SetBit(i: Integer; Value: Boolean);
-     function GetBits: TArray<Integer>;
+     function GetBits: TIntArray;
 
      function Size: Integer;
      function SizeInBytes: Integer;
 
      property Self[i: Integer]: Boolean read GetBit write SetBit; default;
-     property Bits: TArray<Integer> read GetBits;
+     property Bits: TIntArray read GetBits;
 
      function getNextSet(from: Integer): Integer;
      function getNextUnset(from: Integer): Integer;

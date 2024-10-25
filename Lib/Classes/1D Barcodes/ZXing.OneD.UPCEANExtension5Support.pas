@@ -18,12 +18,15 @@
 
 unit ZXing.OneD.UPCEANExtension5Support;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 
-  System.SysUtils, 
-  System.Generics.Collections, 
-  System.Math,
+  SysUtils, 
+  Generics.Collections, 
+  Math,
+  ZXIng.Common.Types,
   ZXing.Reader,
   ZXing.BinaryBitmap,
   ZXing.ReadResult,
@@ -41,15 +44,15 @@ type
   TUPCEANExtension5Support = class sealed
   private
     class var
-      CHECK_DIGIT_ENCODINGS : TArray<Integer>;
-      decodeMiddleCounters : TArray<Integer>;
+      CHECK_DIGIT_ENCODINGS : TIntArray;
+      decodeMiddleCounters : TIntArray;
       decodeRowStringBuffer : TStringBuilder;
 
     class procedure InitializeClass; static;
     class procedure FinalizeClass; static;
 
     class function decodeMiddle(const row: IBitArray;
-      const startRange: TArray<Integer>;
+      const startRange: TIntArray;
       const resultString: TStringBuilder): Integer;
 
     class function extensionChecksum(const s: string): Integer; static;
@@ -69,7 +72,7 @@ type
     class function parseExtension5String(const raw: String): String; static;
   public
     class function decodeRow(const rowNumber: Integer; const row: IBitArray;
-      const extensionStartRange: TArray<Integer>): TReadResult;
+      const extensionStartRange: TIntArray): TReadResult;
   end;
 
 implementation
@@ -81,9 +84,9 @@ uses
 
 class procedure TUPCEANExtension5Support.InitializeClass;
 begin
-  CHECK_DIGIT_ENCODINGS := TArray<Integer>.Create($18, $14, $12, $11, $0C,
+  CHECK_DIGIT_ENCODINGS := TIntArray.Create($18, $14, $12, $11, $0C,
                                                   $06, $03, $0A, $09, $05);
-  decodeMiddleCounters := TArray<Integer>.Create(0, 0, 0, 0);
+  decodeMiddleCounters := TIntArray.Create(0, 0, 0, 0);
   decodeRowStringBuffer := TStringBuilder.Create;
 end;
 
@@ -95,7 +98,7 @@ begin
 end;
 
 class function TUPCEANExtension5Support.decodeRow(const rowNumber: Integer;
-  const row: IBitArray; const extensionStartRange: TArray<Integer>): TReadResult;
+  const row: IBitArray; const extensionStartRange: TIntArray): TReadResult;
 var
   res : TStringBuilder;
   ending : Integer;
@@ -130,12 +133,12 @@ begin
 end;
 
 class function TUPCEANExtension5Support.decodeMiddle(const row: IBitArray;
-  const startRange: TArray<Integer>; const resultString: TStringBuilder): Integer;
+  const startRange: TIntArray; const resultString: TStringBuilder): Integer;
 var
   bestMatch: Integer;
   counter: Integer;
   ending: Integer;
-  counters : TArray<Integer>;
+  counters : TIntArray;
   rowOffset, x,
   lgPatternFound,
   checkDigit : Integer;

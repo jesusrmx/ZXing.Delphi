@@ -19,10 +19,12 @@
 
 unit ZXing.Common.Detector.WhiteRectangleDetector;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  SysUtils,
   ZXing.Common.BitMatrix,
   ZXing.Common.Detector.MathUtils,
   ZXing.ResultPoint;

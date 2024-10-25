@@ -19,10 +19,13 @@
 
 unit ZXing.Common.ReedSolomon.ReedSolomonDecoder;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 
-  System.SysUtils, 
+  SysUtils,
+  ZXIng.Common.Types,
   // Hint: ZXing.Common.ReedSolomon.GenericGFPoly is implemented in GenericGF as second class
   ZXing.Common.ReedSolomon.GenericGF;
 
@@ -34,12 +37,12 @@ type
   public
     constructor Create(field: TGenericGF);
   public
-    function decode(received: TArray<Integer>; twoS: Integer): boolean;
+    function decode(received: TIntArray; twoS: Integer): boolean;
   strict private
-    function findErrorLocations(errorLocator: IGenericGFPoly): TArray<Integer>;
+    function findErrorLocations(errorLocator: IGenericGFPoly): TIntArray;
   strict private
     function findErrorMagnitudes(errorEvaluator: IGenericGFPoly;
-      errorLocations: TArray<Integer>): TArray<Integer>;
+      errorLocations: TIntArray): TIntArray;
   private
     function runEuclideanAlgorithm(a: IGenericGFPoly; b: IGenericGFPoly;
       pR: Integer): TArray<IGenericGFPoly>;
@@ -57,20 +60,20 @@ begin
   self.field := field
 end;
 	  
-function TReedSolomonDecoder.decode(received: TArray<Integer>;
+function TReedSolomonDecoder.decode(received: TIntArray;
   twoS: Integer): boolean;
 var
   i, eval, position: Integer;
   poly, syndrome, sigma, omega: IGenericGFPoly;
   sigmaOmega: TArray<IGenericGFPoly>;
-  errorLocations: TArray<Integer>;
+  errorLocations: TIntArray;
 
-  syndromeCoefficients, errorMagnitudes: TArray<Integer>;
+  syndromeCoefficients, errorMagnitudes: TIntArray;
   noError: boolean;
 begin
   poly := TGenericGFPoly.Create(self.field, received);
 
-  syndromeCoefficients := TArray<Integer>.Create();
+  syndromeCoefficients := nil; //TIntArray.Create();
   SetLength(syndromeCoefficients, twoS);
 
   try
@@ -136,7 +139,7 @@ begin
 end;
 
 function TReedSolomonDecoder.findErrorLocations(errorLocator: IGenericGFPoly)
-  : TArray<Integer>;
+  : TIntArray;
 var
   numErrors, e, i: Integer;
 
@@ -145,11 +148,11 @@ begin
 
   if (numErrors = 1) then
   begin
-    Result := TArray<Integer>.Create(errorLocator.getCoefficient(1));
+    Result := TIntArray.Create(errorLocator.getCoefficient(1));
     Exit
   end;
 
-  Result := TArray<Integer>.Create();
+  Result := nil; //TIntArray.Create();
   SetLength(Result, numErrors);
 
   e := 0;
@@ -176,13 +179,13 @@ begin
 end;
 
 function TReedSolomonDecoder.findErrorMagnitudes(errorEvaluator: IGenericGFPoly;
-  errorLocations: TArray<Integer>): TArray<Integer>;
+  errorLocations: TIntArray): TIntArray;
 var
   s, i, xiInverse, denominator, j, term, termPlus1: Integer;
 
 begin
   s := Length(errorLocations);
-  Result := TArray<Integer>.Create();
+  Result := nil; //TIntArray.Create();
   SetLength(Result, s);
 
   i := 0;

@@ -20,11 +20,13 @@
 
 unit ZXing.DefaultGridSampler;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Math,
+  SysUtils,
+  Math,
   ZXing.Common.BitMatrix,
   ZXing.Common.PerspectiveTransform,
   ZXing.Common.Detector.MathUtils;
@@ -111,7 +113,7 @@ begin
      exit;
 
   bits := TBitMatrix.Create(dimensionX, dimensionY);
-  points := TArray<Single>.Create();
+  points := nil; //TArray<Single>.Create();
   SetLength(points, dimensionX shl 1);
 
   try

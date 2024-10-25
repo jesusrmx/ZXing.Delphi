@@ -19,13 +19,16 @@
 
 unit ZXing.QrCode.Internal.FinderPatternFinder;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 
-  System.SysUtils,
-  System.Math,
-  System.Generics.Defaults,
-  System.Generics.Collections,
+  SysUtils,
+  Math,
+  Generics.Defaults,
+  Generics.Collections,
+  ZXIng.Common.Types,
   ZXing.Common.BitMatrix,
   ZXing.ResultPoint,
   ZXing.DecodeHinttype,
@@ -48,10 +51,10 @@ type
       FImage: TBitMatrix;
       FPossibleCenters: TList<IFinderPattern>;
       FhasSkipped: Boolean;
-      FCrossCheckStateCount: TArray<Integer>;
+      FCrossCheckStateCount: TIntArray;
       FresultPointCallback: TResultPointCallback;
 
-    class function centerFromEnd(stateCount: TArray<Integer>; pEnd: Integer): Single; static;
+    class function centerFromEnd(stateCount: TIntArray; pEnd: Integer): Single; static;
 
     function crossCheckDiagonal(startI: Integer; centerJ: Integer; maxCount: Integer; originalStateCountTotal: Integer): boolean;
     function crossCheckHorizontal(startJ: Integer; centerI: Integer; maxCount: Integer; originalStateCountTotal: Integer): Single;
@@ -60,7 +63,7 @@ type
     function haveMultiplyConfirmedCenters: boolean;
     function selectBestPatterns: TArray<IFinderPattern>;
 
-    function CrossCheckStateCount: TArray<Integer>;
+    function CrossCheckStateCount: TIntArray;
   protected
     const
       /// <summary>
@@ -71,8 +74,8 @@ type
       /// support up to version 10 for mobile clients
       /// </summary>
       MAX_MODULES: Integer = 97;
-    class function foundPatternCross(const stateCount: TArray<Integer>): Boolean; static;
-    function handlePossibleCenter(stateCount: TArray<Integer>; i: Integer;
+    class function foundPatternCross(const stateCount: TIntArray): Boolean; static;
+    function handlePossibleCenter(stateCount: TIntArray; i: Integer;
       j: Integer): boolean;
     property image: TBitMatrix read FImage;
   public
@@ -126,7 +129,7 @@ constructor TFinderPatternFinder.Create(const image: TBitMatrix;
 begin
   FImage := image;
   FPossibleCenters := TList<IFinderPattern>.Create;
-  FCrossCheckStateCount := TArray<Integer>.Create(0, 0, 0, 0, 0);
+  FCrossCheckStateCount := TIntArray.Create(0, 0, 0, 0, 0);
   FresultPointCallback := resultPointCallback;
 end;
 
@@ -146,7 +149,7 @@ begin
   inherited;
 end;
 
-class function TFinderPatternFinder.centerFromEnd(stateCount: TArray<Integer>;
+class function TFinderPatternFinder.centerFromEnd(stateCount: TIntArray;
   pEnd: Integer): Single;
 var
   aResult: Single;
@@ -165,7 +168,7 @@ end;
 function TFinderPatternFinder.crossCheckDiagonal(startI, centerJ, maxCount,
   originalStateCountTotal: Integer): boolean;
 var
-  stateCount: TArray<Integer>;
+  stateCount: TIntArray;
   i, maxI, maxJ, stateCountTotal: Integer;
 begin
   stateCount := CrossCheckStateCount;
@@ -262,7 +265,7 @@ function TFinderPatternFinder.crossCheckHorizontal(startJ: Integer;
   centerI: Integer; maxCount: Integer;
   originalStateCountTotal: Integer): Single;
 var
-  stateCount: TArray<Integer>;
+  stateCount: TIntArray;
   maxJ, j, stateCountTotal: Integer;
 
 begin
@@ -374,7 +377,7 @@ begin
 
 end;
 
-function TFinderPatternFinder.CrossCheckStateCount: TArray<Integer>;
+function TFinderPatternFinder.CrossCheckStateCount: TIntArray;
 begin
   FCrossCheckStateCount[0] := 0;
   FCrossCheckStateCount[1] := 0;
@@ -388,7 +391,7 @@ function TFinderPatternFinder.crossCheckVertical(startI: Integer;
   centerJ: Integer; maxCount: Integer;
   originalStateCountTotal: Integer): Single;
 var
-  stateCount: TArray<Integer>;
+  stateCount: TIntArray;
   maxI, i, stateCountTotal: Integer;
 begin
 
@@ -505,7 +508,7 @@ var
   done, confirmed: Boolean;
   maxI, maxJ, iSkip,
   i, currentState, j, rowSkip: Integer;
-  stateCount: TArray<Integer>;
+  stateCount: TIntArray;
   patternInfo: TArray<IFinderPattern>;
   resultInfo: TArray<IResultPoint>;
 begin
@@ -526,7 +529,7 @@ begin
      iSkip := MIN_SKIP;
 
   done := false;
-  stateCount := TArray<Integer>.Create(0, 0, 0, 0, 0);
+  stateCount := TIntArray.Create(0, 0, 0, 0, 0);
   try
     i := (iSkip - 1);
     while ((i < maxI) and (not done)) do
@@ -689,7 +692,7 @@ end;
 /// used by finder patterns to be considered a match
 /// </returns>
 class function TFinderPatternFinder.foundPatternCross(
-  const stateCount: TArray<Integer>): Boolean;
+  const stateCount: TIntArray): Boolean;
 var
   i, totalModuleSize,
   count, moduleSize,
@@ -721,7 +724,7 @@ begin
             (Abs(moduleSize - (stateCount[4] shl INTEGER_MATH_SHIFT)) < maxVariance);
 end;
 
-function TFinderPatternFinder.handlePossibleCenter(stateCount: TArray<Integer>;
+function TFinderPatternFinder.handlePossibleCenter(stateCount: TIntArray;
   i, j: Integer): boolean;
 var
   stateCountTotal, index: Integer;
@@ -866,7 +869,7 @@ begin
     avrsng := average;
     comparator :=  TFurthestFromAverageComparator.Create(avrsng);
     FPossibleCenters.Sort(comparator);
-    limit := System.Math.Max((0.2 * avrsng), stdDev);
+    limit := Math.Max((0.2 * avrsng), stdDev);
     i := 0;
     while (((i < FPossibleCenters.Count) and
       (FPossibleCenters.Count > 3))) do

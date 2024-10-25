@@ -19,7 +19,13 @@ unit ZXing.StringUtils;
 }
 interface
 
-uses SysUtils, Generics.Collections, ZXing.DecodeHintType;
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
+uses
+  SysUtils,
+  Generics.Collections,
+  ZXIng.Common.Types,
+  ZXing.DecodeHintType;
 
 type
 
@@ -34,7 +40,7 @@ type
   public
     class var GB2312: string;
     class var SHIFT_JIS: string;
-    class function guessEncoding(bytes: TArray<Byte>;
+    class function guessEncoding(bytes: TBytesArray;
       hints: TDictionary<TDecodeHintType, TObject>): string; static;
 
   end;
@@ -54,7 +60,7 @@ begin
 
 end;
 
-class function TStringUtils.guessEncoding(bytes: TArray<Byte>;
+class function TStringUtils.guessEncoding(bytes: TBytesArray;
   hints: TDictionary<TDecodeHintType, TObject>): string;
 
 var

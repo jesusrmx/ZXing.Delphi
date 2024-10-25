@@ -19,6 +19,8 @@
 
 unit ZXing.Common.BitMatrix;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
@@ -26,10 +28,9 @@ uses
 {$IFDEF FRAMEWORK_FMX}
   FMX.Graphics,
 {$ENDIF}
-{$IFDEF FRAMEWORK_VCL}
-  VCL.Graphics,
-{$ENDIF}
+  Graphics,
   Generics.Collections,
+  ZXIng.Common.Types,
   ZXing.Common.BitArray,
   ZXing.BarcodeFormat,
   ZXing.Helpers,
@@ -48,7 +49,7 @@ type
   /// </summary>
   TBitMatrix = class sealed
   private
-    Fbits: TArray<Integer>;
+    Fbits: TIntArray;
     Fheight: Integer;
     FrowSize: Integer;
     Fwidth: Integer;
@@ -57,7 +58,7 @@ type
     procedure setBit(x, y: Integer; const value: Boolean);
 
     constructor Create(const width, height, rowSize: Integer;
-      const bits: TArray<Integer>); overload;
+      const bits: TIntArray); overload;
   public
     constructor Create(const width, height: Integer); overload;
     constructor Create(const dimension: Integer); overload;
@@ -67,11 +68,11 @@ type
     function Clone: TObject;
     function Equals(obj: TObject): Boolean; override;
     procedure flip(x: Integer; y: Integer);
-    function getBottomRightOnBit: TArray<Integer>;
-    function getEnclosingRectangle: TArray<Integer>;
+    function getBottomRightOnBit: TIntArray;
+    function getEnclosingRectangle: TIntArray;
     function GetHashCode: Integer; override;
     function getRow(const y: Integer; row: IBitArray): IBitArray;
-    function getTopLeftOnBit: TArray<Integer>;
+    function getTopLeftOnBit: TIntArray;
     procedure Rotate180;
     procedure setRegion(left: Integer; top: Integer; width: Integer;
       height: Integer);
@@ -140,14 +141,14 @@ end;
 
 function TBitMatrix.Clone: TObject;
 var
-  b: TArray<Integer>;
+  b: TIntArray;
 begin
   b := TArray.Clone(Fbits);
   Result := TBitMatrix.Create(Self.Fwidth, Self.Fheight, Self.FrowSize, b);
 end;
 
 constructor TBitMatrix.Create(const width, height, rowSize: Integer;
-  const bits: TArray<Integer>);
+  const bits: TIntArray);
 begin
   if ((width < 1) or (height < 1)) then
     raise EArgumentException.Create('Both dimensions must be greater than 0');
@@ -226,7 +227,7 @@ begin
   Fbits[offset] := (Fbits[offset] xor (1 shl x))
 end;
 
-function TBitMatrix.getBottomRightOnBit: TArray<Integer>;
+function TBitMatrix.getBottomRightOnBit: TIntArray;
 var
   bitsOffset, x, y, theBits, bit: Integer;
 begin
@@ -253,10 +254,10 @@ begin
   end;
 
   Inc(x, bit);
-  Result := TArray<Integer>.Create(x, y);
+  Result := TIntArray.Create(x, y);
 end;
 
-function TBitMatrix.getEnclosingRectangle: TArray<Integer>;
+function TBitMatrix.getEnclosingRectangle: TIntArray;
 var
   bit, left, top, right, bottom, y, x32, theBits, widthTmp, heightTmp: Integer;
 begin
@@ -319,7 +320,7 @@ begin
     exit;
   end;
 
-  Result := TArray<Integer>.Create(left, top, widthTmp, heightTmp);
+  Result := TIntArray.Create(left, top, widthTmp, heightTmp);
 end;
 
 function TBitMatrix.GetHashCode: Integer;
@@ -359,7 +360,7 @@ begin
   Result := row;
 end;
 
-function TBitMatrix.getTopLeftOnBit: TArray<Integer>;
+function TBitMatrix.getTopLeftOnBit: TIntArray;
 var
   bitsOffset, x, y, theBits, bit: Integer;
 begin
@@ -387,7 +388,7 @@ begin
   end;
 
   Inc(x, bit);
-  Result := TArray<Integer>.Create(x, y);
+  Result := TIntArray.Create(x, y);
 end;
 
 procedure TBitMatrix.Rotate180;
@@ -447,7 +448,7 @@ end;
 
 procedure TBitMatrix.setRow(y: Integer; row: IBitArray);
 begin
-  Fbits := System.Copy(row.bits, (y * FrowSize), FrowSize);
+  Fbits := Copy(row.bits, (y * FrowSize), FrowSize);
 end;
 
 function TBitMatrix.ToBitmap(format: TBarcodeFormat; content: string): TBitmap;

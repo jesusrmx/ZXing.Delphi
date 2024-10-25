@@ -19,11 +19,14 @@
 
 unit ZXing.Datamatrix.Internal.BitMatrixParser;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
+  ZXIng.Common.Types,
   ZXing.DecodeHintType,
   ZXing.Common.BitMatrix,
   ZXing.QrCode.Internal.FormatInformation,
@@ -140,7 +143,7 @@ type
     /// <returns>bytes encoded within the Data Matrix Code</returns>
     /// <exception cref="FormatException">if the exact number of bytes expected is not read</exception>
     /// </summary>
-    function readCodewords: TArray<Byte>;
+    function readCodewords: TBytesArray;
     destructor Destroy; override;
 
     property Version: TVersion read Fversion;
@@ -182,12 +185,12 @@ begin
   Result := TVersion.getVersionForDimensions(BitMatrix.Height, BitMatrix.Width);
 end;
 
-function TBitMatrixParser.readCodewords: TArray<Byte>;
+function TBitMatrixParser.readCodewords: TBytesArray;
 var
   resultOffset, row, column, numRows, numColumns: Integer;
   corner1Read, corner2Read, corner3Read, corner4Read: Boolean;
 begin
-  Result := TArray<Byte>.Create();
+  Result := nil; //TBytesArray.Create();
   SetLength(Result, Version.TotalCodewords);
   resultOffset := 0;
 

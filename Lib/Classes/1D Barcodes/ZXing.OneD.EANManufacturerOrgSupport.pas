@@ -19,13 +19,16 @@
 
 unit ZXing.OneD.EANManufacturerOrgSupport;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Classes,
-  System.Generics.Collections,
-  System.Math,
+  SysUtils,
+  Classes,
+  Generics.Collections,
+  Math,
+  ZXing.Common.Types,
   ZXing.OneD.UPCEANExtension2Support,
   ZXing.OneD.UPCEANExtension5Support,
   ZXing.Reader,
@@ -48,10 +51,10 @@ type
   TEANManufacturerOrgSupport = class sealed
   private
   var
-    ranges: TList<TArray<Integer>>;
+    ranges: TList<TIntArray>;
     countryIdentifiers: TStringList;
 
-    procedure add(const range: TArray<Integer>; const id: string);
+    procedure add(const range: TIntArray; const id: string);
     procedure initIfNeeded;
   public
     constructor Create;
@@ -66,7 +69,7 @@ implementation
 
 constructor TEANManufacturerOrgSupport.Create;
 begin
-  ranges := TList < TArray < Integer >>.Create;
+  ranges := TList <TIntArray>.Create;
   countryIdentifiers := TStringList.Create;
 end;
 
@@ -81,7 +84,7 @@ function TEANManufacturerOrgSupport.lookupCountryIdentifier(const productCode
   : String): String;
 var
   i, prefix, max: Integer;
-  range: TArray<Integer>;
+  range: TIntArray;
   start, ending: Integer;
 begin
   Result := '';
@@ -107,7 +110,7 @@ begin
   end;
 end;
 
-procedure TEANManufacturerOrgSupport.add(const range: TArray<Integer>;
+procedure TEANManufacturerOrgSupport.add(const range: TIntArray;
   const id: string);
 begin
   ranges.add(range);
@@ -118,112 +121,112 @@ procedure TEANManufacturerOrgSupport.initIfNeeded;
 begin
   if (ranges.Count = 0) then
   begin
-    add(TArray<Integer>.Create(0, 19), 'US/CA');
-    add(TArray<Integer>.Create(30, 39), 'US');
-    add(TArray<Integer>.Create(60, 139), 'US/CA');
-    add(TArray<Integer>.Create(300, 379), 'FR');
-    add(TArray<Integer>.Create(380), 'BG');
-    add(TArray<Integer>.Create(383), 'SI');
-    add(TArray<Integer>.Create(385), 'HR');
-    add(TArray<Integer>.Create(387), 'BA');
-    add(TArray<Integer>.Create(400, 440), 'DE');
-    add(TArray<Integer>.Create(450, 459), 'JP');
-    add(TArray<Integer>.Create(460, 469), 'RU');
-    add(TArray<Integer>.Create(471), 'TW');
-    add(TArray<Integer>.Create(474), 'EE');
-    add(TArray<Integer>.Create(475), 'LV');
-    add(TArray<Integer>.Create(476), 'AZ');
-    add(TArray<Integer>.Create(477), 'LT');
-    add(TArray<Integer>.Create(478), 'UZ');
-    add(TArray<Integer>.Create(479), 'LK');
-    add(TArray<Integer>.Create(480), 'PH');
-    add(TArray<Integer>.Create(481), 'BY');
-    add(TArray<Integer>.Create(482), 'UA');
-    add(TArray<Integer>.Create(484), 'MD');
-    add(TArray<Integer>.Create(485), 'AM');
-    add(TArray<Integer>.Create(486), 'GE');
-    add(TArray<Integer>.Create(487), 'KZ');
-    add(TArray<Integer>.Create(489), 'HK');
-    add(TArray<Integer>.Create(490, 499), 'JP');
-    add(TArray<Integer>.Create(500, 509), 'GB');
-    add(TArray<Integer>.Create(520), 'GR');
-    add(TArray<Integer>.Create(528), 'LB');
-    add(TArray<Integer>.Create(529), 'CY');
-    add(TArray<Integer>.Create(531), 'MK');
-    add(TArray<Integer>.Create(535), 'MT');
-    add(TArray<Integer>.Create(539), 'IE');
-    add(TArray<Integer>.Create(540, 549), 'BE/LU');
-    add(TArray<Integer>.Create(560), 'PT');
-    add(TArray<Integer>.Create(569), 'IS');
-    add(TArray<Integer>.Create(570, 579), 'DK');
-    add(TArray<Integer>.Create(590), 'PL');
-    add(TArray<Integer>.Create(594), 'RO');
-    add(TArray<Integer>.Create(599), 'HU');
-    add(TArray<Integer>.Create(600, 601), 'ZA');
-    add(TArray<Integer>.Create(603), 'GH');
-    add(TArray<Integer>.Create(608), 'BH');
-    add(TArray<Integer>.Create(609), 'MU');
-    add(TArray<Integer>.Create(611), 'MA');
-    add(TArray<Integer>.Create(613), 'DZ');
-    add(TArray<Integer>.Create(616), 'KE');
-    add(TArray<Integer>.Create(618), 'CI');
-    add(TArray<Integer>.Create(619), 'TN');
-    add(TArray<Integer>.Create(621), 'SY');
-    add(TArray<Integer>.Create(622), 'EG');
-    add(TArray<Integer>.Create(624), 'LY');
-    add(TArray<Integer>.Create(625), 'JO');
-    add(TArray<Integer>.Create(626), 'IR');
-    add(TArray<Integer>.Create(627), 'KW');
-    add(TArray<Integer>.Create(628), 'SA');
-    add(TArray<Integer>.Create(629), 'AE');
-    add(TArray<Integer>.Create(640, 649), 'FI');
-    add(TArray<Integer>.Create(690, 695), 'CN');
-    add(TArray<Integer>.Create(700, 709), 'NO');
-    add(TArray<Integer>.Create(729), 'IL');
-    add(TArray<Integer>.Create(730, 739), 'SE');
-    add(TArray<Integer>.Create(740), 'GT');
-    add(TArray<Integer>.Create(741), 'SV');
-    add(TArray<Integer>.Create(742), 'HN');
-    add(TArray<Integer>.Create(743), 'NI');
-    add(TArray<Integer>.Create(744), 'CR');
-    add(TArray<Integer>.Create(745), 'PA');
-    add(TArray<Integer>.Create(746), 'DO');
-    add(TArray<Integer>.Create(750), 'MX');
-    add(TArray<Integer>.Create(754, 755), 'CA');
-    add(TArray<Integer>.Create(759), 'VE');
-    add(TArray<Integer>.Create(760, 769), 'CH');
-    add(TArray<Integer>.Create(770), 'CO');
-    add(TArray<Integer>.Create(773), 'UY');
-    add(TArray<Integer>.Create(775), 'PE');
-    add(TArray<Integer>.Create(777), 'BO');
-    add(TArray<Integer>.Create(779), 'AR');
-    add(TArray<Integer>.Create(780), 'CL');
-    add(TArray<Integer>.Create(784), 'PY');
-    add(TArray<Integer>.Create(785), 'PE');
-    add(TArray<Integer>.Create(786), 'EC');
-    add(TArray<Integer>.Create(789, 790), 'BR');
-    add(TArray<Integer>.Create(800, 839), 'IT');
-    add(TArray<Integer>.Create(840, 849), 'ES');
-    add(TArray<Integer>.Create(850), 'CU');
-    add(TArray<Integer>.Create(858), 'SK');
-    add(TArray<Integer>.Create(859), 'CZ');
-    add(TArray<Integer>.Create(860), 'YU');
-    add(TArray<Integer>.Create(865), 'MN');
-    add(TArray<Integer>.Create(867), 'KP');
-    add(TArray<Integer>.Create(868, 869), 'TR');
-    add(TArray<Integer>.Create(870, 879), 'NL');
-    add(TArray<Integer>.Create(880), 'KR');
-    add(TArray<Integer>.Create(885), 'TH');
-    add(TArray<Integer>.Create(888), 'SG');
-    add(TArray<Integer>.Create(890), 'IN');
-    add(TArray<Integer>.Create(893), 'VN');
-    add(TArray<Integer>.Create(896), 'PK');
-    add(TArray<Integer>.Create(899), 'ID');
-    add(TArray<Integer>.Create(900, 919), 'AT');
-    add(TArray<Integer>.Create(930, 939), 'AU');
-    add(TArray<Integer>.Create(940, 949), 'AZ');
-    add(TArray<Integer>.Create(955), 'MY');
-    add(TArray<Integer>.Create(958), 'MO');
+    add(TIntArray.Create(0, 19), 'US/CA');
+    add(TIntArray.Create(30, 39), 'US');
+    add(TIntArray.Create(60, 139), 'US/CA');
+    add(TIntArray.Create(300, 379), 'FR');
+    add(TIntArray.Create(380), 'BG');
+    add(TIntArray.Create(383), 'SI');
+    add(TIntArray.Create(385), 'HR');
+    add(TIntArray.Create(387), 'BA');
+    add(TIntArray.Create(400, 440), 'DE');
+    add(TIntArray.Create(450, 459), 'JP');
+    add(TIntArray.Create(460, 469), 'RU');
+    add(TIntArray.Create(471), 'TW');
+    add(TIntArray.Create(474), 'EE');
+    add(TIntArray.Create(475), 'LV');
+    add(TIntArray.Create(476), 'AZ');
+    add(TIntArray.Create(477), 'LT');
+    add(TIntArray.Create(478), 'UZ');
+    add(TIntArray.Create(479), 'LK');
+    add(TIntArray.Create(480), 'PH');
+    add(TIntArray.Create(481), 'BY');
+    add(TIntArray.Create(482), 'UA');
+    add(TIntArray.Create(484), 'MD');
+    add(TIntArray.Create(485), 'AM');
+    add(TIntArray.Create(486), 'GE');
+    add(TIntArray.Create(487), 'KZ');
+    add(TIntArray.Create(489), 'HK');
+    add(TIntArray.Create(490, 499), 'JP');
+    add(TIntArray.Create(500, 509), 'GB');
+    add(TIntArray.Create(520), 'GR');
+    add(TIntArray.Create(528), 'LB');
+    add(TIntArray.Create(529), 'CY');
+    add(TIntArray.Create(531), 'MK');
+    add(TIntArray.Create(535), 'MT');
+    add(TIntArray.Create(539), 'IE');
+    add(TIntArray.Create(540, 549), 'BE/LU');
+    add(TIntArray.Create(560), 'PT');
+    add(TIntArray.Create(569), 'IS');
+    add(TIntArray.Create(570, 579), 'DK');
+    add(TIntArray.Create(590), 'PL');
+    add(TIntArray.Create(594), 'RO');
+    add(TIntArray.Create(599), 'HU');
+    add(TIntArray.Create(600, 601), 'ZA');
+    add(TIntArray.Create(603), 'GH');
+    add(TIntArray.Create(608), 'BH');
+    add(TIntArray.Create(609), 'MU');
+    add(TIntArray.Create(611), 'MA');
+    add(TIntArray.Create(613), 'DZ');
+    add(TIntArray.Create(616), 'KE');
+    add(TIntArray.Create(618), 'CI');
+    add(TIntArray.Create(619), 'TN');
+    add(TIntArray.Create(621), 'SY');
+    add(TIntArray.Create(622), 'EG');
+    add(TIntArray.Create(624), 'LY');
+    add(TIntArray.Create(625), 'JO');
+    add(TIntArray.Create(626), 'IR');
+    add(TIntArray.Create(627), 'KW');
+    add(TIntArray.Create(628), 'SA');
+    add(TIntArray.Create(629), 'AE');
+    add(TIntArray.Create(640, 649), 'FI');
+    add(TIntArray.Create(690, 695), 'CN');
+    add(TIntArray.Create(700, 709), 'NO');
+    add(TIntArray.Create(729), 'IL');
+    add(TIntArray.Create(730, 739), 'SE');
+    add(TIntArray.Create(740), 'GT');
+    add(TIntArray.Create(741), 'SV');
+    add(TIntArray.Create(742), 'HN');
+    add(TIntArray.Create(743), 'NI');
+    add(TIntArray.Create(744), 'CR');
+    add(TIntArray.Create(745), 'PA');
+    add(TIntArray.Create(746), 'DO');
+    add(TIntArray.Create(750), 'MX');
+    add(TIntArray.Create(754, 755), 'CA');
+    add(TIntArray.Create(759), 'VE');
+    add(TIntArray.Create(760, 769), 'CH');
+    add(TIntArray.Create(770), 'CO');
+    add(TIntArray.Create(773), 'UY');
+    add(TIntArray.Create(775), 'PE');
+    add(TIntArray.Create(777), 'BO');
+    add(TIntArray.Create(779), 'AR');
+    add(TIntArray.Create(780), 'CL');
+    add(TIntArray.Create(784), 'PY');
+    add(TIntArray.Create(785), 'PE');
+    add(TIntArray.Create(786), 'EC');
+    add(TIntArray.Create(789, 790), 'BR');
+    add(TIntArray.Create(800, 839), 'IT');
+    add(TIntArray.Create(840, 849), 'ES');
+    add(TIntArray.Create(850), 'CU');
+    add(TIntArray.Create(858), 'SK');
+    add(TIntArray.Create(859), 'CZ');
+    add(TIntArray.Create(860), 'YU');
+    add(TIntArray.Create(865), 'MN');
+    add(TIntArray.Create(867), 'KP');
+    add(TIntArray.Create(868, 869), 'TR');
+    add(TIntArray.Create(870, 879), 'NL');
+    add(TIntArray.Create(880), 'KR');
+    add(TIntArray.Create(885), 'TH');
+    add(TIntArray.Create(888), 'SG');
+    add(TIntArray.Create(890), 'IN');
+    add(TIntArray.Create(893), 'VN');
+    add(TIntArray.Create(896), 'PK');
+    add(TIntArray.Create(899), 'ID');
+    add(TIntArray.Create(900, 919), 'AT');
+    add(TIntArray.Create(930, 939), 'AU');
+    add(TIntArray.Create(940, 949), 'AZ');
+    add(TIntArray.Create(955), 'MY');
+    add(TIntArray.Create(958), 'MO');
   end;
 end;
 

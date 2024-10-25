@@ -18,12 +18,15 @@
 
 unit ZXing.OneD.UPCEANExtensionSupport;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 
-  System.SysUtils, 
-  System.Generics.Collections,
-  System.Math,
+  SysUtils, 
+  Generics.Collections,
+  Math,
+  ZXIng.Common.Types,
   ZXing.OneD.UPCEANExtension2Support,
   ZXing.OneD.UPCEANExtension5Support,
   ZXing.Reader,
@@ -39,7 +42,7 @@ type
   TUPCEANExtensionSupport = class sealed
   private
     class var
-      EXTENSION_START_PATTERN : TArray<Integer>;
+      EXTENSION_START_PATTERN : TIntArray;
 
       twoSupport : TUPCEANExtension2Support;
       fiveSupport : TUPCEANExtension5Support;
@@ -60,7 +63,7 @@ uses
 
 class procedure TUPCEANExtensionSupport.InitializeClass();
 begin
-  EXTENSION_START_PATTERN := TArray<Integer>.Create(1, 1, 2);
+  EXTENSION_START_PATTERN := TIntArray.Create(1, 1, 2);
   twoSupport := TUPCEANExtension2Support.Create();
   fiveSupport := TUPCEANExtension5Support.Create();
 end;
@@ -75,7 +78,7 @@ end;
 function TUPCEANExtensionSupport.decodeRow(const rowNumber: Integer;
   const row: IBitArray; const rowOffset: Integer): TReadResult;
 var
-  extensionStartRange: TArray<Integer>;
+  extensionStartRange: TIntArray;
   res : TReadResult;
 begin
   Result := nil;

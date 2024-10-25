@@ -19,6 +19,8 @@
 
 unit ZXing.QrCode.Internal.ErrorCorrectionLevel;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses SysUtils;
@@ -68,10 +70,10 @@ type
     function ordinal: Integer;
 
     /// <summary>
-    /// Returns a <see cref="System.String"/> that represents this instance.
+    /// Returns a <see cref="String"/> that represents this instance.
     /// </summary>
     /// <returns>
-    /// A <see cref="System.String"/> that represents this instance.
+    /// A <see cref="String"/> that represents this instance.
     /// </returns>
     function ToString: String; override;
 

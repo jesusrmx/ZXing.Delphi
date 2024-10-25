@@ -18,12 +18,15 @@
 
 unit ZXing.OneD.UPCEANExtension2Support;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 
-  System.SysUtils, 
-  System.Generics.Collections, 
-  System.Math,
+  SysUtils, 
+  Generics.Collections, 
+  Math,
+  ZXIng.Common.Types,
   ZXing.Reader,
   ZXing.BarcodeFormat,
   ZXing.BinaryBitmap,
@@ -40,14 +43,14 @@ type
   TUPCEANExtension2Support = class sealed
   private
     class var
-      decodeMiddleCounters : TArray<Integer>;
+      decodeMiddleCounters : TIntArray;
       decodeRowStringBuffer : TStringBuilder;
 
     class procedure InitializeClass; static;
     class procedure FinalizeClass; static;
 
     class function decodeMiddle(const row: IBitArray;
-      const startRange: TArray<Integer>;
+      const startRange: TIntArray;
       const resultString: TStringBuilder): Integer;
 
     /// <summary>
@@ -58,7 +61,7 @@ type
     class function parseExtensionString(const raw: String): TResultMetadata; static;
   public
     class function decodeRow(const rowNumber: Integer; const row: IBitArray;
-      const extensionStartRange: TArray<Integer>): TReadResult;
+      const extensionStartRange: TIntArray): TReadResult;
   end;
 
 implementation
@@ -70,7 +73,7 @@ uses
 
 class procedure TUPCEANExtension2Support.InitializeClass;
 begin
-  decodeMiddleCounters := TArray<Integer>.Create(0, 0, 0, 0);
+  decodeMiddleCounters := TIntArray.Create(0, 0, 0, 0);
   decodeRowStringBuffer := TStringBuilder.Create;
 end;
 
@@ -81,7 +84,7 @@ begin
 end;
 
 class function TUPCEANExtension2Support.decodeRow(const rowNumber: Integer;
-  const row: IBitArray; const extensionStartRange: TArray<Integer>): TReadResult;
+  const row: IBitArray; const extensionStartRange: TIntArray): TReadResult;
 var
   res : TStringBuilder;
   ending : Integer;
@@ -117,12 +120,12 @@ begin
 end;
 
 class function TUPCEANExtension2Support.decodeMiddle(const row: IBitArray;
-  const startRange: TArray<Integer>; const resultString: TStringBuilder): Integer;
+  const startRange: TIntArray; const resultString: TStringBuilder): Integer;
 var
   bestMatch: Integer;
   counter: Integer;
   ending: Integer;
-  counters : TArray<Integer>;
+  counters : TIntArray;
   rowOffset, x,
   checkParity: Integer;
 begin

@@ -19,12 +19,15 @@
 
 unit ZXing.OneD.OneDReader;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
+  ZXIng.Common.Types,
   ZXing.Reader,
   ZXing.BinaryBitmap,
   ZXing.ReadResult,
@@ -72,7 +75,7 @@ type
     /// where the ratio has been multiplied by 256. So, 0 means no variance (perfect match); 256 means
     /// the total variance between counters and patterns equals the pattern length, higher values mean
     /// even more variance</returns>
-    class function patternMatchVariance(counters, pattern: TArray<Integer>;
+    class function patternMatchVariance(counters, pattern: TIntArray;
       maxIndividualVariance: Integer): Integer; static;
 
     /// <summary>
@@ -83,7 +86,7 @@ type
     /// <param name="counters">The counters.</param>
     /// <returns></returns>
     class function RecordPatternInReverse(row: IBitArray; start: Integer;
-      counters: TArray<Integer>): Boolean; Static;
+      counters: TIntArray): Boolean; Static;
 
     /// <summary>
     /// Records the size of successive runs of white and black pixels in a row, starting at a given point.
@@ -96,7 +99,7 @@ type
     /// <param name="start">offset into row to start at</param>
     /// <param name="counters">array into which to record counts</param>
     class function recordPattern(row: IBitArray; start: Integer;
-      counters: TArray<Integer>; numCounters: Integer): Boolean;
+      counters: TIntArray; numCounters: Integer): Boolean;
       overload; static;
   public
     /// <summary>
@@ -140,7 +143,7 @@ type
     /// <param name="start">offset into row to start at</param>
     /// <param name="counters">array into which to record counts</param>
     class function recordPattern(row: IBitArray; start: Integer;
-      counters: TArray<Integer>): Boolean; overload; static;
+      counters: TIntArray): Boolean; overload; static;
 
     /// <summary>
     /// Attempts to decode a one-dimensional barcode format given a single row of
@@ -351,7 +354,7 @@ begin
 end;
 
 class function TOneDReader.patternMatchVariance(counters,
-  pattern: TArray<Integer>; maxIndividualVariance: Integer): Integer;
+  pattern: TIntArray; maxIndividualVariance: Integer): Integer;
 var
   scaledPattern, variance, counter, totalVariance, X, unitBarWidth, i,
     patternLength, numCounters, total: Integer;
@@ -400,13 +403,13 @@ begin
 end;
 
 class function TOneDReader.recordPattern(row: IBitArray; start: Integer;
-  counters: TArray<Integer>): Boolean;
+  counters: TIntArray): Boolean;
 begin
   Result := recordPattern(row, start, counters, Length(counters));
 end;
 
 class function TOneDReader.recordPattern(row: IBitArray; start: Integer;
-  counters: TArray<Integer>; numCounters: Integer): Boolean;
+  counters: TIntArray; numCounters: Integer): Boolean;
 
 var
   i, counterPosition, idx, ending: Integer;
@@ -459,7 +462,7 @@ begin
 end;
 
 class function TOneDReader.RecordPatternInReverse(row: IBitArray;
-  start: Integer; counters: TArray<Integer>): Boolean;
+  start: Integer; counters: TIntArray): Boolean;
 
 var
   numTransitionsLeft: Integer;

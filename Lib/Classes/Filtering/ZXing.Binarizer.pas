@@ -20,7 +20,7 @@ unit ZXing.Binarizer;
 interface
 
 uses
-  System.SysUtils,
+  SysUtils,
   ZXing.LuminanceSource,
   ZXing.Common.BitArray,
   ZXing.Common.BitMatrix;

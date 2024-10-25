@@ -20,12 +20,15 @@
 
 unit ZXing.OneD.EAN13Reader;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
-  System.Math,
+  SysUtils,
+  Generics.Collections,
+  Math,
+  ZXIng.Common.Types,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
   ZXing.OneD.UPCEANReader,
@@ -70,8 +73,8 @@ type
     // 0    1    1   0   0    1   == 0x19
     //
   class var
-    FIRST_DIGIT_ENCODINGS: TArray<Integer>;
-    decodeMiddleCounters: TArray<Integer>;
+    FIRST_DIGIT_ENCODINGS: TIntArray;
+    decodeMiddleCounters: TIntArray;
 
     /// <summary>
     /// Based on pattern of odd-even ('L' and 'G') patterns used to encoded the explicitly-encoded
@@ -101,7 +104,7 @@ type
     /// horizontal offset of first pixel after the "middle" that was decoded or -1 if decoding could not complete successfully
     /// </returns>
     class function DecodeMiddle(const row: IBitArray;
-      const startRange: TArray<Integer>; const resultString: TStringBuilder)
+      const startRange: TIntArray; const resultString: TStringBuilder)
       : Integer; override;
 
 
@@ -118,13 +121,13 @@ implementation
 { TEAN13Reader }
 
 class function TEAN13Reader.DecodeMiddle(const row: IBitArray;
-  const startRange: TArray<Integer>;
+  const startRange: TIntArray;
   const resultString: TStringBuilder): Integer;
 var
   bestMatch: Integer;
   counter: Integer;
   ending: Integer;
-  counters, middleRange: TArray<Integer>;
+  counters, middleRange: TIntArray;
   rowOffset, x, lgPatternFound: Integer;
 begin
   Result := -1;
@@ -197,7 +200,7 @@ end;
 
 class procedure TEAN13Reader.InitializeClass;
 begin
-  FIRST_DIGIT_ENCODINGS := TArray<Integer>.Create($00, $0B, $0D, $0E, $13, $19,
+  FIRST_DIGIT_ENCODINGS := TIntArray.Create($00, $0B, $0D, $0E, $13, $19,
     $1C, $15, $16, $1A);
   SetLength(decodeMiddleCounters, 4);
 end;

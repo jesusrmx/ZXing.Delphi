@@ -20,10 +20,13 @@
 
 unit ZXing.QrCode.Internal.DataBlock;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 
-  System.SysUtils, 
+  SysUtils,
+  ZXIng.Common.Types,
   ZXing.QrCode.Internal.Version,
   ZXing.QrCode.Internal.ErrorCorrectionLevel;
 
@@ -34,10 +37,10 @@ type
   /// </summary>
   TDataBlock = class sealed
   private
-    Fcodewords: TArray<Byte>;
+    Fcodewords: TBytesArray;
     FnumDataCodewords: Integer;
   public
-    constructor Create(const codewords: TArray<Byte>;
+    constructor Create(const codewords: TBytesArray;
       const NumDataCodewords: Integer);
     destructor Destroy; override;
 
@@ -55,10 +58,10 @@ type
     /// <returns> {@link TDataBlock}s containing original bytes, "de-interleaved" from representation in the
     /// QR Code
     /// </returns>
-    class function getDataBlocks(const rawCodewords: TArray<Byte>;
+    class function getDataBlocks(const rawCodewords: TBytesArray;
       const version: TVersion; const ecLevel: TErrorCorrectionLevel): TArray<TDataBlock>; static;
 
-    property codewords : TArray<Byte> read Fcodewords;
+    property codewords : TBytesArray read Fcodewords;
     property numDataCodewords : Integer read FnumDataCodewords;
   end;
 
@@ -66,7 +69,7 @@ implementation
 
 { TDataBlock }
 
-constructor TDataBlock.Create(const codewords: TArray<Byte>;
+constructor TDataBlock.Create(const codewords: TBytesArray;
   const numDataCodewords: Integer);
 begin
   Fcodewords := codewords;
@@ -79,7 +82,7 @@ begin
   inherited;
 end;
 
-class function TDataBlock.getDataBlocks(const rawCodewords: TArray<Byte>;
+class function TDataBlock.getDataBlocks(const rawCodewords: TBytesArray;
   const version: TVersion; const ecLevel: TErrorCorrectionLevel): TArray<TDataBlock>;
 var
   numResultBlocks,
@@ -95,7 +98,7 @@ var
   ecBlock: Tversion.TECB;
   ecBlocks: Tversion.TECBlocks;
   ecBlockArray: TArray<Tversion.TECB>;
-  numBlockCodewordsBytes: TArray<Byte>;
+  numBlockCodewordsBytes: TBytesArray;
 
 begin
   if (Length(rawCodewords) <> Version.TotalCodewords)
@@ -114,7 +117,7 @@ begin
     Inc(totalBlocks, ecBlock.Count);
 
   // Now establish DataBlocks of the appropriate size and number of data codewords
-  Result := TArray<TDataBlock>.Create();
+  Result := nil; //TArray<TDataBlock>.Create();
   SetLength(result, totalBlocks);
   numResultBlocks := 0;
   for ecBlock in ecBlockArray do
@@ -124,7 +127,7 @@ begin
       numDataCodewords := ecBlock.DataCodewords;
       numBlockCodewords := ecBlocks.ECCodewordsPerBlock + numDataCodewords;
 
-      numBlockCodewordsBytes := TArray<Byte>.Create();
+      numBlockCodewordsBytes := nil; //TBytesArray.Create();
       SetLength(numBlockCodewordsBytes, numBlockCodewords);
 
       Result[numResultBlocks] := TDataBlock.Create(numBlockCodewordsBytes, numDataCodewords);

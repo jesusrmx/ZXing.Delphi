@@ -20,12 +20,15 @@
 
 unit ZXing.QrCode.Internal.AlignmentPatternFinder;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 
-  System.SysUtils,
-  System.Math,
-  System.Generics.Collections,
+  SysUtils,
+  Math,
+  Generics.Collections,
+  ZXIng.Common.Types,
   ZXing.Common.BitMatrix,
   ZXing.QrCode.Internal.AlignmentPattern, // nullableType,
   ZXing.ResultPoint,
@@ -51,13 +54,13 @@ type
     startX, startY: Integer;
     width, height: Integer;
     moduleSize: Single;
-    crossCheckStateCount: TArray<Integer>;
+    crossCheckStateCount: TIntArray;
     resultPointCallback: TResultPointCallback;
 
     /// <summary> Given a count of black/white/black pixels just seen and an end position,
     /// figures the location of the center of this black/white/black run.
     /// </summary>
-    class function centerFromEnd(const stateCount: TArray<Integer>;
+    class function centerFromEnd(const stateCount: TIntArray;
       const pEnd: Integer): Single; static;
 
     /// <param name="stateCount">count of black/white/black pixels just read
@@ -65,7 +68,7 @@ type
     /// <returns> true iff the proportions of the counts is close enough to the 1/1/1 ratios
     /// used by alignment patterns to be considered a match
     /// </returns>
-    function foundPatternCross(const stateCount: TArray<Integer>): Boolean;
+    function foundPatternCross(const stateCount: TIntArray): Boolean;
 
     /// <summary>
     ///   <p>After a horizontal scan finds a potential alignment pattern, this method
@@ -97,7 +100,7 @@ type
     /// </param>
     /// <returns> {@link TAlignmentPattern} if we have found the same pattern twice, or null if not
     /// </returns>
-    function handlePossibleCenter(const stateCount: TArray<Integer>;
+    function handlePossibleCenter(const stateCount: TIntArray;
       const i, j: Integer): IAlignmentPattern;
   public
     /// <summary> <p>Creates a finder that will look in a portion of the whole image.</p>
@@ -145,7 +148,7 @@ begin
   Self.width := width;
   Self.height := height;
   Self.moduleSize := moduleSize;
-  Self.crossCheckStateCount := TArray<Integer>.Create(0, 0, 0);
+  Self.crossCheckStateCount := TIntArray.Create(0, 0, 0);
   Self.resultPointCallback := resultPointCallback;
 end;
 
@@ -163,7 +166,7 @@ function TAlignmentPatternFinder.find: IAlignmentPattern;
 var
   confirmed: IAlignmentPattern;
   maxJ, middleI, iGen, i, j, currentState: Integer;
-  stateCount: TArray<Integer>;
+  stateCount: TIntArray;
 begin
   startX := Self.startX;
   height := Self.height;
@@ -171,7 +174,7 @@ begin
   middleI := Self.startY + (TMathUtils.Asr(height, 1));
   // We are looking for black/white/black modules in 1:1:1 ratio;
   // this tracks the number of black/white/black modules seen so far
-  stateCount := TArray<Integer>.Create(0, 0, 0);
+  stateCount := TIntArray.Create(0, 0, 0);
   for iGen := 0 to Pred(height) do
   begin
     // Search from middle outwards
@@ -260,7 +263,7 @@ begin
 end;
 
 class function TAlignmentPatternFinder.centerFromEnd(
-  const stateCount: TArray<Integer>; const pEnd: Integer): Single;
+  const stateCount: TIntArray; const pEnd: Integer): Single;
 begin
   Result := (pEnd - stateCount[2]) - (stateCount[1] / 2.0);
   if (Single.IsNaN(Result))
@@ -269,7 +272,7 @@ begin
 end;
 
 function TAlignmentPatternFinder.foundPatternCross(
-  const stateCount: TArray<Integer>): Boolean;
+  const stateCount: TIntArray): Boolean;
 var
   maxVariance: Single;
   i: Integer;
@@ -291,7 +294,7 @@ function TAlignmentPatternFinder.crossCheckVertical(const startI, centerJ,
 var
   maxI,
   i, stateCountTotal: Integer;
-  stateCount: TArray<Integer>;
+  stateCount: TIntArray;
 begin
   maxI := Self.image.height;
   stateCount := Self.crossCheckStateCount;
@@ -366,7 +369,7 @@ begin
 end;
 
 function TAlignmentPatternFinder.handlePossibleCenter(
-  const stateCount: TArray<Integer>; const i, j: Integer): IAlignmentPattern;
+  const stateCount: TIntArray; const i, j: Integer): IAlignmentPattern;
 var
   center, point: IAlignmentPattern;
   stateCountTotal: Integer;

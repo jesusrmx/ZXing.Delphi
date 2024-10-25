@@ -19,11 +19,14 @@
 
 unit ZXing.QrCode.Internal.Decoder;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
+  ZXing.Common.Types,
   ZXing.DecodeHintType,
   ZXing.Common.BitMatrix,
   ZXing.QrCode.Internal.BitMatrixParser,
@@ -52,7 +55,7 @@ type
     /// <param name="codewordBytes">data and error correction codewords</param>
     /// <param name="numDataCodewords">number of codewords that are data bytes</param>
     /// <returns></returns>
-    function correctErrors(const codewordBytes: TArray<Byte>;
+    function correctErrors(const codewordBytes: TBytesArray;
       const numDataCodewords: Integer): Boolean;
 
     function decode(const parser: TBitMatrixParser;
@@ -105,17 +108,17 @@ begin
   inherited;
 end;
 
-function TQRDecoder.correctErrors(const codewordBytes: TArray<Byte>;
+function TQRDecoder.correctErrors(const codewordBytes: TBytesArray;
   const numDataCodewords: Integer): Boolean;
 var
   i, numCodewords, numECCodewords: Integer;
-  codewordsInts: TArray<Integer>;
+  codewordsInts: TIntArray;
 begin
   Result := false;
 
   numCodewords := Length(codewordBytes);
   // First read into an array of ints
-  codewordsInts := TArray<Integer>.Create();
+  codewordsInts := nil; //TIntArray.Create();
   SetLength(codewordsInts, numCodewords);
   for i := 0 to Pred(numCodewords) do
     codewordsInts[i] := (codewordBytes[i] and $FF);
@@ -209,7 +212,7 @@ var
   Version: TVersion;
   formatInfo: TFormatInformation;
   ecLevel: TErrorCorrectionLevel;
-  codeWords, resultBytes, codewordBytes: TArray<Byte>;
+  codeWords, resultBytes, codewordBytes: TBytesArray;
   totalBytes, resultOffset, i, numDataCodewords: Integer;
 begin
   Result := nil;
@@ -240,7 +243,7 @@ begin
   for DataBlock in dataBlocks do
     Inc(totalBytes, DataBlock.numDataCodewords);
 
-  resultBytes := TArray<Byte>.Create();
+  resultBytes := nil; //TBytesArray.Create();
   SetLength(resultBytes, totalBytes);
   try
 

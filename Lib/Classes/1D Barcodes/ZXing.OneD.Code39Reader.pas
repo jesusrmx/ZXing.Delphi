@@ -20,10 +20,13 @@ unit ZXing.OneD.Code39Reader;
 
 interface
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
+  ZXIng.Common.Types,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
   ZXing.ReadResult,
@@ -40,10 +43,10 @@ type
     class var ALPHABET: TArray<Char>;
     class function decodeExtended(encoded: string): string; static;
 
-    function findAsteriskPattern(row: IBitArray): TArray<Integer>;
+    function findAsteriskPattern(row: IBitArray): TIntArray;
     class function patternToChar(pattern: Integer; var c: Char)
       : boolean; static;
-    class function toNarrowWidePattern(counters: TArray<Integer>)
+    class function toNarrowWidePattern(counters: TIntArray)
       : Integer; static;
 
   const
@@ -51,8 +54,8 @@ type
     class var ASTERISK_ENCODING: Integer;
 
   class var
-    CHARACTER_ENCODINGS: TArray<Integer>;
-    counters: TArray<Integer>;
+    CHARACTER_ENCODINGS: TIntArray;
+    counters: TIntArray;
     decodeRowResult: TStringBuilder;
     usingCheckDigit: boolean;
     extendedMode: boolean;
@@ -73,7 +76,7 @@ implementation
 constructor TCode39Reader.Create(AUsingCheckDigit, AExtendedMode: boolean);
 begin
   ALPHABET := ALPHABET_STRING.ToCharArray;
-  CHARACTER_ENCODINGS := TArray<Integer>.Create($034, $121, $061, $160, $031,
+  CHARACTER_ENCODINGS := TIntArray.Create($034, $121, $061, $160, $031,
     $130, $070, $025, $124, $064, // 0-9
     $109, $049, $148, $019, $118, $058, $00D, $10C, $04C, $01C, // A-J
     $103, $043, $142, $013, $112, $052, $007, $106, $046, $016, // K-T
@@ -83,7 +86,7 @@ begin
 
   ASTERISK_ENCODING := TCode39Reader.CHARACTER_ENCODINGS[$27];
 
-  counters := TArray<Integer>.Create();
+  counters := nil; //TIntArray.Create();
   SetLength(counters, 9);
   decodeRowResult := TStringBuilder.Create();
   usingCheckDigit := AUsingCheckDigit;
@@ -197,7 +200,7 @@ var
   decodedChar: Char;
   lastStart: Integer;
   index, nextStart, counter, aEnd, pattern, lastPatternSize: Integer;
-  start: TArray<Integer>;
+  start: TIntArray;
   resultString: String;
   Left, Right: Single;
   resultPoints: TArray<IResultPoint>;
@@ -317,7 +320,7 @@ begin
 
 end;
 
-function TCode39Reader.findAsteriskPattern(row: IBitArray): TArray<Integer>;
+function TCode39Reader.findAsteriskPattern(row: IBitArray): TIntArray;
 var
   i, l, patternStart, patternLength, width, counterPosition, rowOffset,
     index: Integer;
@@ -353,7 +356,7 @@ begin
         if (TCode39Reader.toNarrowWidePattern(counters)
           = TCode39Reader.ASTERISK_ENCODING) then
         begin
-          Result := TArray<Integer>.Create(patternStart, i);
+          Result := TIntArray.Create(patternStart, i);
           exit
         end;
 
@@ -404,7 +407,7 @@ begin
 end;
 
 class function TCode39Reader.toNarrowWidePattern
-  (counters: TArray<Integer>): Integer;
+  (counters: TIntArray): Integer;
 var
   numCounters: Integer;
   maxNarrowCounter: Integer;

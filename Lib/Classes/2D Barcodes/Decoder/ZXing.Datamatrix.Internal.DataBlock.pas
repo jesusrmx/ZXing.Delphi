@@ -19,10 +19,13 @@
 
 unit ZXing.Datamatrix.Internal.DataBlock;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 
-  System.SysUtils, 
+  SysUtils,
+  ZXIng.Common.Types,
   ZXing.Datamatrix.Internal.Version;
   
 type
@@ -33,17 +36,17 @@ type
   /// </summary>
   TDataBlock = class sealed
   private
-    Fcodewords: TArray<Byte>;
+    Fcodewords: TBytesArray;
     FNumDataCodewords: Integer;
   public
-    constructor Create(const Acodewords: TArray<Byte>;
+    constructor Create(const Acodewords: TBytesArray;
       const ANumDataCodewords: Integer);
     destructor Destroy;override;
 
-    class function getDataBlocks(rawCodewords: TArray<Byte>;
+    class function getDataBlocks(rawCodewords: TBytesArray;
       version: TVersion): TArray<TDataBlock>;
 
-    property codewords: TArray<Byte> read Fcodewords;
+    property codewords: TBytesArray read Fcodewords;
     property NumDataCodewords: Integer read FNumDataCodewords;
   end;
 
@@ -51,7 +54,7 @@ implementation
 
 { TDataBlock }  
   
-constructor TDataBlock.Create(const Acodewords: TArray<Byte>;
+constructor TDataBlock.Create(const Acodewords: TBytesArray;
   const ANumDataCodewords: Integer);
 begin
   FnumDataCodewords := AnumDataCodewords;
@@ -64,7 +67,7 @@ begin
   inherited;
 end;
 
-class function TDataBlock.getDataBlocks(rawCodewords: TArray<Byte>;
+class function TDataBlock.getDataBlocks(rawCodewords: TBytesArray;
   version: TVersion): TArray<TDataBlock>;
 var
   i, j: Integer;
@@ -72,7 +75,7 @@ var
   ecBlocks : TVersion.TECBlocks;
   totalBlocks : Integer;
   ecBlockArray : TArray<TVersion.TECB>;
-  byteArray    : TArray<Byte>;
+  byteArray    : TBytesArray;
   numResultBlocks,
   numDataCodewords,
   numBlockCodewords,
@@ -99,7 +102,7 @@ begin
   end;
     
   // Now establish DataBlocks of the appropriate size and number of data codewords
-  result := TArray<TDataBlock>.Create();
+  result := nil; //TArray<TDataBlock>.Create();
   SetLength(result, totalBlocks);
   numResultBlocks := 0;
 
@@ -109,7 +112,7 @@ begin
 	  begin
       numDataCodewords := ecBlock.DataCodewords;
       numBlockCodewords := (ecBlocks.ECCodewords + numDataCodewords);
-      byteArray := TArray<Byte>.Create();
+      byteArray := nil; //TBytesArray.Create();
       SetLength(byteArray, numBlockCodewords);
       result[numResultBlocks] := TDataBlock.Create(byteArray, numDataCodewords);
       Inc(numResultBlocks);

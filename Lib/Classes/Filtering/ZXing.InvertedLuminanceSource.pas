@@ -19,27 +19,30 @@
 
 unit ZXing.InvertedLuminanceSource;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  SysUtils,
+  ZXing.Common.Types,
   ZXing.LuminanceSource;
 
 type
   TInvertedLuminanceSource = class sealed(TLuminanceSource)
   private
     delegate: TLuminanceSource;
-    invertedMatrix: TArray<Byte>;
+    invertedMatrix: TBytesArray;
   public
     constructor Create(delegate: TLuminanceSource); reintroduce;
 
     function crop(const left, top, width, height: Integer): TLuminanceSource; override;
-    function getRow(const y: Integer; row: TArray<Byte>): TArray<Byte>; override;
+    function getRow(const y: Integer; row: TBytesArray): TBytesArray; override;
     function rotateCounterClockwise(): TLuminanceSource; override;
     function rotateCounterClockwise45(): TLuminanceSource; override;
 
     function invert: TLuminanceSource; override;
-    function Matrix: TArray<Byte>; override;
+    function Matrix: TBytesArray; override;
     function CropSupported: Boolean; override;
     function RotateSupported: Boolean; override;
   end;
@@ -71,9 +74,9 @@ end;
 /// <returns>
 /// An array containing the luminance data.
 /// </returns>
-function TInvertedLuminanceSource.getRow(const y: Integer; row: TArray<Byte>): TArray<Byte>;
+function TInvertedLuminanceSource.getRow(const y: Integer; row: TBytesArray): TBytesArray;
 var
-  rowArray : TArray<Byte>;
+  rowArray : TBytesArray;
   i, width : Integer;
 begin
   rowArray := delegate.getRow(y, row);
@@ -92,16 +95,16 @@ end;
 /// larger than width * height bytes on some platforms. Do not modify the contents
 /// of the result.
 ///   </returns>
-function TInvertedLuminanceSource.Matrix: TArray<Byte>;
+function TInvertedLuminanceSource.Matrix: TBytesArray;
 var
-  matrixArray: TArray<Byte>;
+  matrixArray: TBytesArray;
   i, len: Integer;
 begin
   if (invertedMatrix = nil) then
   begin
     matrixArray := delegate.Matrix;
     len := Self.Width * Self.Height;
-    invertedMatrix := TArray<Byte>.Create();
+    invertedMatrix := nil; //TBytesArray.Create();
     SetLength(invertedMatrix, len);
     for i := 0 to Pred(len) do
       invertedMatrix[i] := (255 - (matrixArray[i] and $FF));

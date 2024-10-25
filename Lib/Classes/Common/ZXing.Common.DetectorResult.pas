@@ -20,10 +20,12 @@
 
 unit ZXing.Common.DetectorResult;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  SysUtils,
   ZXing.Common.BitMatrix,
   ZXing.ResultPoint;
 

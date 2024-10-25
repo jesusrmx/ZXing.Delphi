@@ -19,12 +19,15 @@
 
 unit ZXing.OneD.Code93Reader;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
+  ZXing.Common.Types,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
   ZXing.ReadResult,
@@ -40,16 +43,16 @@ type
   /// </summary>
   TCode93Reader = class sealed(TOneDReader)
   private
-    class var ALPHABET: TArray<Char>;
+    class var ALPHABET: TCharArray;
     class function checkChecksums(pResult: TStringBuilder): boolean; static;
     class function checkOneChecksum(pResult: TStringBuilder;
       checkPosition, weightMax: Integer): boolean;
     class function decodeExtended(encoded: TStringBuilder): string; static;
 
-    function findAsteriskPattern(row: IBitArray): TArray<Integer>;
+    function findAsteriskPattern(row: IBitArray): TIntArray;
     class function patternToChar(pattern: Integer; var c: Char)
       : boolean; static;
-    class function toPattern(counters: TArray<Integer>): Integer; static;
+    class function toPattern(counters: TIntArray): Integer; static;
 
   const
     ALPHABET_STRING
@@ -57,8 +60,8 @@ type
     class var ASTERISK_ENCODING: Integer;
 
   class var
-    CHARACTER_ENCODINGS: TArray<Integer>;
-    counters: TArray<Integer>;
+    CHARACTER_ENCODINGS: TIntArray;
+    counters: TIntArray;
     decodeRowResult: TStringBuilder;
 
   public
@@ -77,7 +80,7 @@ implementation
 constructor TCode93Reader.Create;
 begin
   ALPHABET := '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%abcd*'.ToCharArray;
-  CHARACTER_ENCODINGS := TArray<Integer>.Create($114, $148, $144, $142, $128,
+  CHARACTER_ENCODINGS := TIntArray.Create($114, $148, $144, $142, $128,
     $124, 290, $150, $112, $10A, $1A8, 420, $1A2, $194, $192, $18A, 360, $164,
     $162, $134, $11A, $158, $14C, $146, 300, $116, $1B4, $1B2, $1AC, $1A6, $196,
     410, $16C, $166, 310, $13A, $12E, $1D4, $1D2, $1CA, $16E, $176, 430, $126,
@@ -85,7 +88,7 @@ begin
 
   ASTERISK_ENCODING := TCode93Reader.CHARACTER_ENCODINGS[$2F];
 
-  counters := TArray<Integer>.Create();
+  counters := nil; //TIntArray.Create();
   SetLength(counters, 6);
   decodeRowResult := TStringBuilder.Create();
 end;
@@ -266,7 +269,7 @@ var
   decodedChar: Char;
   lastStart: Integer;
   index, nextStart, counter, aEnd, pattern, lastPatternSize: Integer;
-  start: TArray<Integer>;
+  start: TIntArray;
   resultString: String;
   Left, Right: Single;
   resultPointCallback: TResultPointCallback;
@@ -382,7 +385,7 @@ begin
     TBarcodeFormat.CODE_93);
 end;
 
-function TCode93Reader.findAsteriskPattern(row: IBitArray): TArray<Integer>;
+function TCode93Reader.findAsteriskPattern(row: IBitArray): TIntArray;
 var
   i, l, patternStart, patternLength, width, counterPosition, rowOffset,
     index: Integer;
@@ -418,7 +421,7 @@ begin
         if (TCode93Reader.toPattern(counters) = TCode93Reader.ASTERISK_ENCODING)
         then
         begin
-          Result := TArray<Integer>.Create(patternStart, i);
+          Result := TIntArray.Create(patternStart, i);
           exit
         end;
 
@@ -468,7 +471,7 @@ begin
   Result := false;
 end;
 
-class function TCode93Reader.toPattern(counters: TArray<Integer>): Integer;
+class function TCode93Reader.toPattern(counters: TIntArray): Integer;
 var
   counter, max, sum, pattern, i, j, scaledShifted, scaledUnshifted: Integer;
 begin

@@ -19,12 +19,22 @@
 
 unit ZXing.OneD.Code128Reader;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
+  {$IFDEF FRAMEWORK_VCL}
   System.SysUtils,
   System.Generics.Collections,
   System.Math,
+  {$ENDIF}
+  {$IFDEF FRAMEWORK_LCL}
+  SysUtils,
+  Generics.Collections,
+  Math,
+  {$ENDIF}
+  ZXing.Common.Types,
   ZXing.Helpers,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
@@ -34,7 +44,7 @@ uses
   ZXing.BarcodeFormat;
 
 var
-  CODE_PATTERNS: TArray<TArray<Integer>>;
+  CODE_PATTERNS: T2DIntArray;
 
 type
   /// <summary>
@@ -58,8 +68,8 @@ type
 
     class var MAX_AVG_VARIANCE: Integer;
     class var MAX_INDIVIDUAL_VARIANCE: Integer;
-    class function FindStartPattern(row: IBitArray): TArray<Integer>;
-    class function DecodeCode(row: IBitArray; counters: TArray<Integer>;
+    class function FindStartPattern(row: IBitArray): TIntArray;
+    class function DecodeCode(row: IBitArray; counters: TIntArray;
       rowOffset: Integer; var code: Integer): Boolean;
 
     class procedure DoInitialize();
@@ -129,18 +139,18 @@ begin
 
 end;
 
-class function TCode128Reader.FindStartPattern(row: IBitArray): TArray<Integer>;
+class function TCode128Reader.FindStartPattern(row: IBitArray): TIntArray;
 var
   i, bestMatch, startCode, bestVariance, width, rowOffset, patternStart,
     patternLength, variance, counterPosition: Integer;
-  counters: TArray<Integer>;
+  counters: TIntArray;
   isWhite: Boolean;
 
 begin
   width := row.Size;
   rowOffset := row.getNextSet(0);
   counterPosition := 0;
-  counters := TArray<Integer>.Create();
+  counters := nil; //TIntArray.Create();
   SetLength(counters, 6);
   patternStart := rowOffset;
   isWhite := false;
@@ -214,10 +224,10 @@ begin
 end;
 
 class function TCode128Reader.DecodeCode(row: IBitArray;
-  counters: TArray<Integer>; rowOffset: Integer; var code: Integer): Boolean;
+  counters: TIntArray; rowOffset: Integer; var code: Integer): Boolean;
 var
   bestVariance, l, d, variance: Integer;
-  pattern: TArray<Integer>;
+  pattern: TIntArray;
 begin
 
   code := -1;
@@ -253,11 +263,11 @@ function TCode128Reader.decodeRow(const rowNumber: Integer;
 var
   shiftUpperMode, upperMode, lastCharacterWasPrintable, convertFNC1, done,
     unshift, isNextShifted: Boolean;
-  counters, startPatternInfo: TArray<Integer>;
+  counters, startPatternInfo: TIntArray;
   lastPatternSize, multiplier, checksumTotal, code, lastCode, nextStart,
     lastStart, startCode, codeSet, l, rawCodesSize: Integer;
   rawCodes: TList<Byte>;
-  rawBytes: TArray<Byte>;
+  rawBytes: TBytesArray;
   aResult: String;
   counter, resultLength, i: Integer;
   left, right: Single;
@@ -605,7 +615,7 @@ begin
     // we fudged decoding CODE_STOP since it actually has 7 bars, not 6. There is a black bar left
     // to read off. Would be slightly better to properly read. Here we just skip it:
     nextStart := row.getNextUnset(nextStart);
-    if not row.isRange(nextStart, System.Math.Min(row.Size,
+    if not row.isRange(nextStart, Math.Min(row.Size,
       nextStart + (nextStart - lastStart) div 2), false) then
     begin
       result := nil;

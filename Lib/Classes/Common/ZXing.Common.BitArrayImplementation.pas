@@ -1,5 +1,7 @@
 unit ZXing.Common.BitArrayImplementation;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 uses ZXing.Common.BitArray;
 
@@ -8,7 +10,8 @@ function NewBitArray(const Size: Integer):IBitArray; overload;
 
 implementation
 uses
-  System.SysUtils,
+  SysUtils,
+  ZXIng.Common.Types,
   ZXing.Common.Detector.MathUtils,
   Math;
 
@@ -19,18 +22,18 @@ type
   /// </summary>
   TBitArrayImplementation = class(TInterfacedObject, IBitArray)
   strict private
-    _lookup: TArray<Integer>;
-    Fbits: TArray<Integer>;
+    _lookup: TIntArray;
+    Fbits: TIntArray;
     Fsize: Integer;
     procedure InitLookup();
     function GetBit(i: Integer): Boolean;
     procedure SetBit(i: Integer; Value: Boolean);
-    function makeArray(Size: Integer): TArray<Integer>;
+    function makeArray(Size: Integer): TIntArray;
     procedure ensureCapacity(size: Integer);
 
 
     function numberOfTrailingZeros(num: Integer): Integer;
-    function GetBits: TArray<Integer>;
+    function GetBits: TIntArray;
 
   private
     constructor Create(); overload;
@@ -41,7 +44,7 @@ type
     function SizeInBytes: Integer;
 
     property Self[i: Integer]: Boolean read GetBit write SetBit; default;
-    property Bits: TArray<Integer> read Fbits;
+    property Bits: TIntArray read Fbits;
 
     destructor Destroy; override;
     function getNextSet(from: Integer): Integer;
@@ -78,7 +81,7 @@ end;
 
 procedure TBitArrayImplementation.ensureCapacity(size: Integer);
 var
-  newBits : TArray<Integer>;
+  newBits : TIntArray;
 begin
   if (size > TMathUtils.Asr(Length(Fbits), 5)) then
   begin
@@ -100,7 +103,7 @@ begin
   Result := ((Fbits[TMathUtils.Asr(i, 5)]) and (1 shl (i and $1F))) <> 0;
 end;
 
-function TBitArrayImplementation.GetBits: TArray<Integer>;
+function TBitArrayImplementation.GetBits: TIntArray;
 begin
    result := FBits;
 end;
@@ -181,14 +184,14 @@ end;
 
 procedure TBitArrayImplementation.InitLookup;
 begin
-  _lookup := TArray<Integer>.Create(32, 0, 1, 26, 2, 23, 27, 0, 3, 16, 24, 30,
+  _lookup := TIntArray.Create(32, 0, 1, 26, 2, 23, 27, 0, 3, 16, 24, 30,
     28, 11, 0, 13, 4, 7, 17, 0, 25, 22, 31, 15, 29, 10, 12, 6, 0, 21, 14, 9, 5,
     20, 8, 19, 18);
 end;
 
-function TBitArrayImplementation.makeArray(Size: Integer): TArray<Integer>;
+function TBitArrayImplementation.makeArray(Size: Integer): TIntArray;
 var
-  ar: TArray<Integer>;
+  ar: TIntArray;
 begin
   SetLength(ar, TMathUtils.Asr((Size + 31), 5));
   Result := ar;
@@ -214,7 +217,7 @@ end;
 
 procedure TBitArrayImplementation.Reverse;
 var
-  newBits: TArray<Integer>;
+  newBits: TIntArray;
   i, len, oldBitsLen, leftOffset, mask, nextInt, currentInt: Integer;
   x: Int64;
 begin

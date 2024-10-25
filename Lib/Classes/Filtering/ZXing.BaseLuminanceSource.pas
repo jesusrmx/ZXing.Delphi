@@ -19,16 +19,20 @@
 
 unit ZXing.BaseLuminanceSource;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 uses
-  System.SysUtils,
-  System.UITypes,
+  SysUtils,
+  //UITypes,
 {$IFDEF FRAMEWORK_FMX}
   FMX.Graphics,
 {$ENDIF}
 {$IFDEF FRAMEWORK_VCL}
-  VCL.Graphics,
+  Graphics,
 {$ENDIF}
+  Graphics,
+  ZXing.Common.Types,
   ZXing.LuminanceSource,
   ZXing.InvertedLuminanceSource;
 
@@ -39,7 +43,7 @@ type
   /// </summary>
   TBaseLuminanceSource = class abstract (TLuminanceSource)
   protected
-    luminances: TArray<Byte>;
+    luminances: TBytesArray;
 
     const
       RChannelWeight : Integer = 19562;
@@ -47,21 +51,21 @@ type
       BChannelWeight : Integer = 7424;
       ChannelWeight  : Integer = 16;
 	  
-    function CreateLuminanceSource(const newLuminances: TArray<Byte>;
+    function CreateLuminanceSource(const newLuminances: TBytesArray;
       const width, height: Integer): TLuminanceSource; virtual; abstract;
   public
     
     // added the "reintroduce" keyword to shut off the "method hides another method with the same name in the base class"
     constructor Create(const width, height: Integer);  reintroduce; overload; 
-    constructor Create(const luminanceArray: TArray<Byte>; const width, height: Integer);  reintroduce; overload;
+    constructor Create(const luminanceArray: TBytesArray; const width, height: Integer);  reintroduce; overload;
 
-    function getRow(const y: Integer; row: TArray<Byte>): TArray<Byte>; override;
+    function getRow(const y: Integer; row: TBytesArray): TBytesArray; override;
     function rotateCounterClockwise(): TLuminanceSource; override;
     function rotateCounterClockwise45(): TLuminanceSource; override;
     function crop(const left, top,
       width, height: Integer): TLuminanceSource; override;
 
-    function Matrix: TArray<Byte>; override;
+    function Matrix: TBytesArray; override;
     function RotateSupported: Boolean; override;
     function InversionSupported: Boolean; override;
     function CropSupported: Boolean; override;
@@ -76,7 +80,7 @@ constructor TBaseLuminanceSource.Create(const width, height: Integer);
 begin
   inherited Create(width, height);
   
-  luminances := TArray<Byte>.Create();
+  luminances := nil; //TBytesArray.Create();
   SetLength(luminances, (width * height));
 end;
 
@@ -86,11 +90,12 @@ end;
 /// <param name="luminanceArray">The luminance array.</param>
 /// <param name="width">The width.</param>
 /// <param name="height">The height.</param>
-constructor TBaseLuminanceSource.Create(const luminanceArray: TArray<Byte>; 
+constructor TBaseLuminanceSource.Create(const luminanceArray: TBytesArray; 
   const width, height: Integer);
 begin
   Self.Create(width, height);
-  Copy(luminanceArray, 0, Length(luminances));
+  raise Exception.Create('ME: wtf 1 - TBaseLuminanceSource.Create');
+  //Copy(luminanceArray, 0, Length(luminances));
 end;
 
 /// <summary>
@@ -106,7 +111,7 @@ end;
 /// An array containing the luminance data.
 /// </returns>
 function TBaseLuminanceSource.getRow(const y: Integer; 
-  row: TArray<Byte>): TArray<Byte>;
+  row: TBytesArray): TBytesArray;
 var
   i, width: Integer;
 begin
@@ -114,7 +119,7 @@ begin
   if ((row = nil) or (Length(row) < width)) then
   begin
     row := nil;
-    row := TArray<Byte>.Create();
+    //row := TBytesArray.Create();
     SetLength(row, width);
   end;
 
@@ -124,7 +129,7 @@ begin
   Result := row;  
 end;
 
-function TBaseLuminanceSource.Matrix: TArray<Byte>;
+function TBaseLuminanceSource.Matrix: TBytesArray;
 begin
   Result := luminances;
 end;
@@ -138,14 +143,14 @@ end;
 /// </returns>
 function TBaseLuminanceSource.rotateCounterClockwise(): TLuminanceSource;
 var
-  rotatedLuminances : TArray<Byte>;
+  rotatedLuminances : TBytesArray;
   newWidth,
   newHeight : Integer;
-  localLuminances : TArray<Byte>;
+  localLuminances : TBytesArray;
   yold, ynew,
   xold, xnew : Integer;
 begin
-  rotatedLuminances := TArray<Byte>.Create();
+  rotatedLuminances := nil; //TBytesArray.Create();
   SetLength(rotatedLuminances, (Width * Height));
 
   newWidth := Height;
@@ -198,7 +203,7 @@ function TBaseLuminanceSource.Crop(const left, top,
   width, height: Integer): TLuminanceSource;
 var
   croppedLuminances,
-  oldLuminances : TArray<Byte>;
+  oldLuminances : TBytesArray;
   oldWidth,
   oldRightBound,
   oldBottomBound : Integer;
@@ -209,7 +214,7 @@ begin
   then
      raise EArgumentException.Create('Crop rectangle does not fit within image data.');
 
-  croppedLuminances := TArray<Byte>.Create();
+  croppedLuminances := nil; //TBytesArray.Create();
   SetLength(croppedLuminances, (width * height));
   oldLuminances := Self.Matrix;
   oldWidth := Self.Width;

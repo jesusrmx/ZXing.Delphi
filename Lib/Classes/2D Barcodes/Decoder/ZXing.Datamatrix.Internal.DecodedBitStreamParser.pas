@@ -21,9 +21,12 @@ unit ZXing.Datamatrix.Internal.DecodedBitStreamParser;
 
 interface
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
+  ZXIng.Common.Types,
   ZXing.DecoderResult,
   ZXing.ByteSegments,
   ZXing.BitSource;
@@ -60,18 +63,18 @@ type
     class function decodeAsciiSegment(bits: TBitSource; res: TStringBuilder;
       resultTrailer: TStringBuilder; var mode: TMode): boolean;
     class procedure parseTwoBytes(firstByte: Integer; secondByte: Integer;
-      result: TArray<Integer>);
+      result: TIntArray);
     class function unrandomize255State(randomizedBase256Codeword: Integer;
       base256CodewordPosition: Integer): Integer;
   public
-    class function decode(bytes: TArray<Byte>): TDecoderResult;
+    class function decode(bytes: TBytesArray): TDecoderResult;
   end;
 
 implementation
 
 { TDecodedBitStreamParser }
 
-class function TDecodedBitStreamParser.decode(bytes: TArray<Byte>)
+class function TDecodedBitStreamParser.decode(bytes: TBytesArray)
   : TDecoderResult;
 var
   bits: TBitSource;
@@ -87,7 +90,7 @@ begin
 
   try
 
-    byteSegments.Add(TArray<Byte>.Create()); // TODO (KG): Validation
+    byteSegments.Add(nil{TBytesArray.Create()}); // TODO (KG): Validation
     mode := TMode.ASCII_ENCODE;
     while ((mode <> TMode.PAD_ENCODE) and (bits.available() > 0)) do
     begin
@@ -187,14 +190,14 @@ class function TDecodedBitStreamParser.decodeAnsiX12Segment(bits: TBitSource;
   res: TStringBuilder): boolean;
 var
   i: Integer;
-  cValues: TArray<Integer>;
+  cValues: TIntArray;
   firstByte: Integer;
   cValue: Integer;
 begin
   // Three ANSI X12 values are encoded in a 16-bit value as
   // (1600 * C1) + (40 * C2) + C3 + 1
 
-  cValues := TArray<Integer>.Create(0, 0, 0);
+  cValues := TIntArray.Create(0, 0, 0);
   while (bits.available() > 0) do
   begin
     // If there is only one byte left then it will be encoded as ASCII
@@ -443,7 +446,7 @@ class function TDecodedBitStreamParser.decodeBase256Segment(bits: TBitSource;
   res: TStringBuilder; byteSegments: IByteSegments ): boolean;
 var
   i, Count, codewordPosition, d1: Integer;
-  bytes: TArray<Byte>;
+  bytes: TBytesArray;
 begin
   // Figure out how long the Base 256 Segment is.
   codewordPosition := (1 + bits.ByteOffset); // position is 1-indexed
@@ -469,7 +472,7 @@ begin
     exit;
   end;
 
-  bytes := TArray<Byte>.Create();
+  bytes := nil; //TBytesArray.Create();
   SetLength(bytes, Count);
 
   for i := 0 to Pred(Count) do
@@ -505,7 +508,7 @@ class function TDecodedBitStreamParser.decodeC40Segment(bits: TBitSource;
 var
   i: Integer;
   c40char: Char;
-  cValues: TArray<Integer>;
+  cValues: TIntArray;
   upperShift: boolean;
   shift: Integer;
   firstByte: Byte;
@@ -516,7 +519,7 @@ begin
   // TODO: The Upper Shift with C40 doesn't work in the 4 value scenario all the time
   upperShift := false;
 
-  cValues := TArray<Integer>.Create(0, 0, 0);
+  cValues := TIntArray.Create(0, 0, 0);
   shift := 0;
 
   while (bits.available() > 0) do
@@ -684,7 +687,7 @@ class function TDecodedBitStreamParser.decodeTextSegment(bits: TBitSource;
   res: TStringBuilder): boolean;
 var
   textChar: Char;
-  cValues: TArray<Integer>;
+  cValues: TIntArray;
   upperShift: boolean;
   i, shift: Integer;
   firstByte: Integer;
@@ -695,7 +698,7 @@ begin
   // TODO: The Upper Shift with Text doesn't work in the 4 value scenario all the time
   upperShift := false;
 
-  cValues := TArray<Integer>.Create(0, 0, 0);
+  cValues := TIntArray.Create(0, 0, 0);
   shift := 0;
 
   while (bits.available() > 0) do
@@ -820,7 +823,7 @@ begin
 end;
 
 class procedure TDecodedBitStreamParser.parseTwoBytes(firstByte: Integer;
-  secondByte: Integer; result: TArray<Integer>);
+  secondByte: Integer; result: TIntArray);
 var
   fullBitValue, temp: Integer;
 begin

@@ -19,13 +19,15 @@
 
 unit ZXing.Datamatrix.Internal.Detector;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Math,
-  System.Generics.Defaults,
-  System.Generics.Collections,
+  SysUtils,
+  Math,
+  Generics.Defaults,
+  Generics.Collections,
   ZXing.Common.BitMatrix,
   ZXing.DefaultGridSampler,
   ZXing.Common.DetectorResult,
@@ -281,7 +283,7 @@ begin
     else
     begin
       // The matrix is square
-      dimension := System.Math.Min(dimensionRight, dimensionTop);
+      dimension := Math.Min(dimensionRight, dimensionTop);
       // correct top right point to match the white module
       correctedTopRight := correctTopRight(bottomLeft, bottomRight, topLeft,
         topRight, dimension);
@@ -292,7 +294,7 @@ begin
       transA := transitionsBetween(topLeft, correctedTopRight);
       transB := transitionsBetween(bottomRight, correctedTopRight);
       dimensionCorrected :=
-        (System.Math.Max(transA.Transitions, transB.Transitions) + 1);
+        (Math.Max(transA.Transitions, transB.Transitions) + 1);
 
       transA.Free;
       transB.Free;

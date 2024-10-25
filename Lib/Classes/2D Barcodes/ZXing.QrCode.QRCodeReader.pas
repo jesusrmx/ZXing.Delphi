@@ -19,12 +19,15 @@
 
 unit ZXing.QrCode.QRCodeReader;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Math,
-  System.Generics.Collections,
+  SysUtils,
+  Math,
+  Generics.Collections,
+  ZXIng.Common.Types,
   ZXing.Common.BitArray,
   ZXing.ReadResult,
   ZXing.Reader,
@@ -59,7 +62,7 @@ type
     /// <seealso cref="ZXing.Datamatrix.DataMatrixReader.extractPureBits(TBitMatrix)" />
     /// </summary>
     class function extractPureBits(const image: TBitMatrix): TBitMatrix; static;
-    class function moduleSize(const leftTopBlack: TArray<Integer>;
+    class function moduleSize(const leftTopBlack: TIntArray;
       const image: TBitMatrix; var msize: Single): Boolean; static;
   protected
     /// <summary>
@@ -108,7 +111,7 @@ constructor TQRCodeReader.Create;
 begin
   inherited;
   FDecoder := TQRDecoder.Create;
-  NO_POINTS := TArray<IResultPoint>.Create();
+  NO_POINTS := nil; //TArray<IResultPoint>.Create();
 end;
 
 destructor TQRCodeReader.Destroy;
@@ -217,7 +220,7 @@ class function TQRCodeReader.extractPureBits(const image: TBitMatrix)
   : TBitMatrix;
 var
   moduleSize: Single;
-  leftTopBlack, rightBottomBlack: TArray<Integer>;
+  leftTopBlack, rightBottomBlack: TIntArray;
   top, bottom, left, right, matrixWidth, matrixHeight, nudge, x, y, iOffset,
     nudgedTooFarRight, nudgedTooFarDown: Integer;
   bits: TBitMatrix;
@@ -298,7 +301,7 @@ begin
   Result := bits;
 end;
 
-class function TQRCodeReader.moduleSize(const leftTopBlack: TArray<Integer>;
+class function TQRCodeReader.moduleSize(const leftTopBlack: TIntArray;
   const image: TBitMatrix; var msize: Single): Boolean;
 var
   height, width, x, y: Integer;

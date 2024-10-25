@@ -19,8 +19,11 @@ unit ZXing.DecoderResult;
 }
 interface
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 uses SysUtils,
      Generics.Collections,
+     ZXIng.Common.Types,
      ZXIng.ByteSegments;
 
 type
@@ -33,14 +36,14 @@ type
     Erasures: Integer;
     ErrorsCorrected: Integer;
     Other: TObject;
-    RawBytes: TArray<Byte>;
+    RawBytes: TBytesArray;
     StructuredAppendParity: Integer;
     StructuredAppendSequenceNumber: Integer;
     Text: string;
 
-    constructor Create(RawBytes: TArray<Byte>; const Text: string;
+    constructor Create(RawBytes: TBytesArray; const Text: string;
       ByteSegments: IByteSegments; ECLevel: string); overload;
-    constructor Create(RawBytes: TArray<Byte>; const Text: string;
+    constructor Create(RawBytes: TBytesArray; const Text: string;
       ByteSegments: IByteSegments; ECLevel: string; saSequence: Integer;
       saParity: Integer); overload;
     destructor Destroy; override;
@@ -52,13 +55,13 @@ implementation
 
 { TDecoderResult }
 
-constructor TDecoderResult.Create(RawBytes: TArray<Byte>; const Text: String;
+constructor TDecoderResult.Create(RawBytes: TBytesArray; const Text: String;
   ByteSegments: IByteSegments; ECLevel: String);
 begin
   Self.Create(RawBytes, Text, ByteSegments, ECLevel, -1, -1);
 end;
 
-constructor TDecoderResult.Create(RawBytes: TArray<Byte>; const Text: string;
+constructor TDecoderResult.Create(RawBytes: TBytesArray; const Text: string;
   ByteSegments: IByteSegments; ECLevel: string;
   saSequence, saParity: Integer);
 begin

@@ -19,6 +19,8 @@
 
 unit ZXing.QrCode.Internal.QRCodeDecoderMetaData;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 

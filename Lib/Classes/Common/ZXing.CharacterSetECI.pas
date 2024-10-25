@@ -19,6 +19,8 @@ unit ZXing.CharacterSetECI;
 }
 interface
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 uses SysUtils, Generics.Collections;
 
 type
@@ -26,9 +28,9 @@ type
   TECI = class abstract
   private
     value_Renamed: Integer;
-    constructor Create(value_Renamed: Integer);
+    constructor Create(value_Renamed_: Integer);
   public
-    class function getECIByValue(value_Renamed: Integer): TECI; static;
+    class function getECIByValue(value_Renamed_: Integer): TECI; static;
     property value: Integer read value_Renamed;
   end;
 
@@ -65,20 +67,20 @@ implementation
 
 { TECI }
 
-constructor TECI.Create(value_Renamed: Integer);
+constructor TECI.Create(value_Renamed_: Integer);
 begin
-  self.value_Renamed := value_Renamed
+  self.value_Renamed := value_Renamed_
 end;
 
-class function TECI.getECIByValue(value_Renamed: Integer): TECI;
+class function TECI.getECIByValue(value_Renamed_: Integer): TECI;
 begin
-  if ((value_Renamed < 0) or (value_Renamed > $F423F)) then
+  if ((value_Renamed_ < 0) or (value_Renamed_ > $F423F)) then
     raise EArgumentException.Create('Bad ECI value: ' +
-      value_Renamed.ToString());
+      value_Renamed_.ToString());
 
-  if (value_Renamed < 900) then
+  if (value_Renamed_ < 900) then
   begin
-    Result := TCharacterSetECI.getCharacterSetECIByValue(value_Renamed);
+    Result := TCharacterSetECI.getCharacterSetECIByValue(value_Renamed_);
     exit
   end;
 

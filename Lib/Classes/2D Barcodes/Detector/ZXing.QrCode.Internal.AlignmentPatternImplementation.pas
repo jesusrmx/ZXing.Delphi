@@ -20,6 +20,7 @@
 
 unit ZXing.QrCode.Internal.AlignmentPatternImplementation;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
 
 interface
 
@@ -44,7 +45,7 @@ type
   /// all but the simplest QR Codes.</p>
   ///
   /// </summary>
-  TAlignmentPattern = class sealed(TResultPoint,IResultPoint,IAlignmentPattern)
+  TAlignmentPattern = class(TResultPoint,IAlignmentPattern)
   private
     estimatedModuleSize: Single;
     constructor Create(const posX, posY, estimatedModuleSize: Single);

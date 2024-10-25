@@ -19,11 +19,14 @@
 
 unit ZXing.QrCode.Internal.BitMatrixParser;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses 
   SysUtils, 
-  Generics.Collections, 
+  Generics.Collections,
+  ZXIng.Common.Types,
   ZXing.DecodeHintType,
   ZXing.Common.BitMatrix, 
   ZXing.QrCode.Internal.Version,
@@ -94,7 +97,7 @@ type
     /// <returns> bytes encoded within the QR Code
     /// </returns>
     /// <throws>  ReaderException if the exact number of bytes expected is not read </throws>
-    function readCodewords: TArray<Byte>;
+    function readCodewords: TBytesArray;
   end;
 
 implementation
@@ -150,7 +153,7 @@ begin
       end;
 end;
 
-function TBitMatrixParser.readCodewords: TArray<Byte>;
+function TBitMatrixParser.readCodewords: TBytesArray;
 var
   formatInfo: TFormatInformation;
   dimension, resultOffset,
@@ -183,7 +186,7 @@ begin
 
   try
     readingUp := true;
-    Result := TArray<Byte>.Create();
+    Result := nil; //TBytesArray.Create();
     SetLength(Result, version.TotalCodewords);
     resultOffset := 0;
     currentByte := 0;

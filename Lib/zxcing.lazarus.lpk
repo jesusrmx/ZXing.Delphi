@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CONFIG>
+  <Package Version="5">
+    <PathDelim Value="\"/>
+    <Name Value="ZXCing.Lazarus"/>
+    <Type Value="RunAndDesignTime"/>
+    <CompilerOptions>
+      <Version Value="11"/>
+      <PathDelim Value="\"/>
+      <SearchPaths>
+        <OtherUnitFiles Value="Classes;Classes\1D Barcodes;Classes\2D Barcodes;Classes\2D Barcodes\Decoder;Classes\2D Barcodes\Detector;Classes\Common;Classes\Common\Detector;Classes\Common\ReedSolomon;Classes\Filtering"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="-dFRAMEWORK_LCL"/>
+      </Other>
+    </CompilerOptions>
+    <Files>
+      <Item>
+        <Filename Value="Classes\ZXing.ScanManager.pas"/>
+        <UnitName Value="ZXing.ScanManager"/>
+      </Item>
+      <Item>
+        <Filename Value="Classes\Common\ZXIng.Common.Types.pas"/>
+        <UnitName Value="ZXIng.Common.Types"/>
+      </Item>
+    </Files>
+    <RequiredPkgs>
+      <Item>
+        <PackageName Value="LCL"/>
+      </Item>
+      <Item>
+        <PackageName Value="FCL"/>
+      </Item>
+    </RequiredPkgs>
+    <UsageOptions>
+      <UnitPath Value="$(PkgOutDir)"/>
+    </UsageOptions>
+    <PublishOptions>
+      <Version Value="2"/>
+      <UseFileFilters Value="True"/>
+    </PublishOptions>
+  </Package>
+</CONFIG>

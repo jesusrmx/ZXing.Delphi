@@ -20,13 +20,15 @@
 
 unit ZXing.MultiFormatReader;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Rtti,
-  System.Generics.Collections,
-  System.RegularExpressions,
+  SysUtils,
+  Rtti,
+  Generics.Collections,
+  //RegularExpressions,
   ZXing.ReadResult,
   ZXing.Reader,
   ZXing.DecodeHintType,

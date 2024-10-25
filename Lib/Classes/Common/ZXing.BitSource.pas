@@ -19,19 +19,22 @@ unit ZXing.BitSource;
 }
 interface
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 uses 
-  SysUtils, 
+  SysUtils,
+  ZXing.Common.Types,
   ZXing.Common.Detector.MathUtils;
 
 type
 
   TBitSource = class sealed
   private
-    bytes: TArray<Byte>;
+    bytes: TBytesArray;
   public
     BitOffset: Integer;
     ByteOffset: Integer;
-    constructor Create(bytes: TArray<Byte>);
+    constructor Create(bytes: TBytesArray);
     function available: Integer;
     function readBits(numBits: Integer): Integer;
   end;
@@ -45,7 +48,7 @@ begin
   Result := 8 * (Length(self.bytes) - self.ByteOffset) - self.BitOffset;
 end;
 
-constructor TBitSource.Create(bytes: TArray<Byte>);
+constructor TBitSource.Create(bytes: TBytesArray);
 begin
   self.bytes := bytes;
 end;

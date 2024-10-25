@@ -24,9 +24,10 @@ unit ZXing.OneD.EAN8Reader;
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
-  System.Math,
+  SysUtils,
+  Generics.Collections,
+  Math,
+  ZXIng.Common.Types,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
   ZXing.OneD.UPCEANReader,
@@ -42,13 +43,13 @@ type
   TEAN8Reader = class(TUPCEANReader)
 
   private
-    class var DecodeMiddleCounters: TArray<Integer>;
+    class var DecodeMiddleCounters: TIntArray;
 
     class procedure DoInitialize();
     class procedure DoFinalize();
   public
     class function DecodeMiddle(const row: IBitArray;
-      const startRange: TArray<Integer>; const resultString: TStringBuilder)
+      const startRange: TIntArray; const resultString: TStringBuilder)
       : Integer; override;
 
     function BarcodeFormat: TBarcodeFormat; override;
@@ -72,12 +73,12 @@ begin
 end;
 
 class function TEAN8Reader.DecodeMiddle(const row: IBitArray;
-  const startRange: TArray<Integer>;
+  const startRange: TIntArray;
   const resultString: TStringBuilder): Integer;
 var
   ending, rowOffset, x, bestMatch: Integer;
   counter: Integer;
-  counters, middleRange: TArray<Integer>;
+  counters, middleRange: TIntArray;
 begin
   counters := self.DecodeMiddleCounters;
   counters[0] := 0;

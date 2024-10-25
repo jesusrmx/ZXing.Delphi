@@ -19,10 +19,13 @@
 
 unit ZXing.ResultPoint;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  SysUtils,
+  ZXing.Common.Types,
   ZXing.Common.Detector.MathUtils;
 
 type

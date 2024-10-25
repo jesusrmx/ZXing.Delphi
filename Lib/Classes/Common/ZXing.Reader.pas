@@ -19,11 +19,13 @@
 
 unit ZXing.Reader;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   ZXing.BinaryBitmap,
   ZXing.ReadResult,
   ZXing.DecodeHintType;

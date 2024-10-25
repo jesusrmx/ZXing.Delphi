@@ -19,9 +19,12 @@
 
 unit ZXing.QrCode.Internal.DecodedBitStreamParser;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
-uses 
+uses
+  ZXIng.Common.Types,
   ZXing.BitSource,
   SysUtils, 
   ZXing.DecodeHintType,
@@ -83,7 +86,7 @@ type
     class function parseECIValue(const bits: TBitSource): Integer; static;
     class function toAlphaNumericChar(const value: Integer): Char; static;
   public
-    class function decode(const bytes: TArray<Byte>; const version: TVersion;
+    class function decode(const bytes: TBytesArray; const version: TVersion;
       const ecLevel: TErrorCorrectionLevel;
       const hints: TDictionary<TDecodeHintType, TObject>): TDecoderResult; static;
   end;
@@ -105,7 +108,7 @@ begin
   ALPHANUMERIC_CHARS := nil;
 end;
 
-class function TDecodedBitStreamParser.decode(const bytes: TArray<Byte>;
+class function TDecodedBitStreamParser.decode(const bytes: TBytesArray;
   const version: TVersion; const ecLevel: TErrorCorrectionLevel;
   const hints: TDictionary<TDecodeHintType, TObject>): TDecoderResult;
 var
@@ -334,7 +337,7 @@ class function TDecodedBitStreamParser.decodeByteSegment(const bits: TBitSource;
 var
   Enc:TEncoding;
   encodingS, s: string;
-  readBytes: TArray<Byte>;
+  readBytes: TBytesArray;
   i: Integer;
 begin
   Result := false;
@@ -343,7 +346,7 @@ begin
   then
      exit;
 
-  readBytes := TArray<Byte>.Create();
+  readBytes := nil; //TBytesArray.Create();
   SetLength(readBytes, count);
   for i := 0 to Pred(count) do
     readBytes[i] := Byte(bits.readBits(8));
@@ -379,7 +382,7 @@ end;
 class function TDecodedBitStreamParser.decodeHanziSegment(
   const bits: TBitSource; const res: TStringBuilder; count: Integer): Boolean;
 var
-  buffer: TArray<Byte>;
+  buffer: TBytesArray;
   offset, twoBytes,
   assembledTwoBytes: Integer;
 begin
@@ -391,7 +394,7 @@ begin
 
   // Each character will require 2 bytes. Read the characters as 2-byte pairs
   // and decode as GB2312 afterwards
-  buffer := TArray<Byte>.Create();
+  buffer := nil; //TBytesArray.Create();
   SetLength(buffer, 2 * count);
   offset := 0;
 
@@ -427,7 +430,7 @@ end;
 class function TDecodedBitStreamParser.decodeKanjiSegment(
   const bits: TBitSource; const res: TStringBuilder; count: Integer): Boolean;
 var
-  buffer: TArray<Byte>;
+  buffer: TBytesArray;
   twoBytes, offset,
   assembledTwoBytes: Integer;
 begin
@@ -439,7 +442,7 @@ begin
 
   // Each character will require 2 bytes. Read the characters as 2-byte pairs
   // and decode as Shift_JIS afterwards
-  buffer := TArray<Byte>.Create();
+  buffer := nil; //TBytesArray.Create();
   SetLength(buffer, 2 * count);
   offset := 0;
 

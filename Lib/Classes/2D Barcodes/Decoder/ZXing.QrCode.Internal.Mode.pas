@@ -19,10 +19,13 @@
 
 unit ZXing.QrCode.Internal.Mode;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
+  SysUtils,
+  ZXIng.Common.Types,
   ZXing.QrCode.Internal.Version;
 
 type
@@ -34,12 +37,12 @@ type
   private
     Fbits : Integer;
     Fname : String;
-    characterCountBitsForVersions: TArray<Integer>;
+    characterCountBitsForVersions: TIntArray;
 
     class procedure InitializeClass; static;
     class procedure FinalizeClass; static;
   public
-    constructor Create(const characterCountBitsForVersions: TArray<Integer>;
+    constructor Create(const characterCountBitsForVersions: TIntArray;
       const bits: Integer; const name: String); overload;
 
     // No, we can't use an enum here. J2ME doesn't support it.
@@ -110,10 +113,10 @@ type
     function getCharacterCountBits(const version: TVersion): Integer;
 
     /// <summary>
-    /// Returns a <see cref="System.String"/> that represents this instance.
+    /// Returns a <see cref="String"/> that represents this instance.
     /// </summary>
     /// <returns>
-    /// A <see cref="System.String"/> that represents this instance.
+    /// A <see cref="String"/> that represents this instance.
     /// </returns>
     function ToString: String; override;
 
@@ -132,7 +135,7 @@ implementation
 
 { TMode }
 
-constructor TMode.Create(const characterCountBitsForVersions: TArray<Integer>;
+constructor TMode.Create(const characterCountBitsForVersions: TIntArray;
   const bits: Integer; const name: String);
 begin
   Self.characterCountBitsForVersions := characterCountBitsForVersions;
@@ -143,19 +146,19 @@ end;
 class procedure TMode.InitializeClass;
 begin
 
-  TMode.TERMINATOR := TMode.Create(TArray<Integer>.Create(0, 0, 0), 0, 'TERMINATOR');
-  TMode.NUMERIC := TMode.Create(TArray<Integer>.Create(10, 12, 14), 1,
+  TMode.TERMINATOR := TMode.Create(TIntArray.Create(0, 0, 0), 0, 'TERMINATOR');
+  TMode.NUMERIC := TMode.Create(TIntArray.Create(10, 12, 14), 1,
     'NUMERIC');
-  TMode.ALPHANUMERIC := TMode.Create(TArray<Integer>.Create(9, 11, 13), 2,
+  TMode.ALPHANUMERIC := TMode.Create(TIntArray.Create(9, 11, 13), 2,
     'ALPHANUMERIC');
-  TMode.STRUCTURED_APPEND := TMode.Create(TArray<Integer>.Create(0, 0, 0), 3,
+  TMode.STRUCTURED_APPEND := TMode.Create(TIntArray.Create(0, 0, 0), 3,
     'STRUCTURED_APPEND');
-  TMode.BYTE := TMode.Create(TArray<Integer>.Create(8, $10, $10), 4, 'BYTE');
+  TMode.BYTE := TMode.Create(TIntArray.Create(8, $10, $10), 4, 'BYTE');
   TMode.ECI := TMode.Create(nil, 7, 'ECI');
-  TMode.KANJI := TMode.Create(TArray<Integer>.Create(8, 10, 12), 8, 'KANJI');
+  TMode.KANJI := TMode.Create(TIntArray.Create(8, 10, 12), 8, 'KANJI');
   TMode.FNC1_FIRST_POSITION := TMode.Create(nil, 5, 'FNC1_FIRST_POSITION');
   TMode.FNC1_SECOND_POSITION := TMode.Create(nil, 9, 'FNC1_SECOND_POSITION');
-  TMode.HANZI := TMode.Create(TArray<Integer>.Create(8, 10, 12), 13, 'HANZI')
+  TMode.HANZI := TMode.Create(TIntArray.Create(8, 10, 12), 13, 'HANZI')
 end;
 
 class procedure TMode.FinalizeClass;

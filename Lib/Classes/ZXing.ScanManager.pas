@@ -2,15 +2,18 @@ unit ZXing.ScanManager;
 
 interface
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
 {$IFDEF FRAMEWORK_FMX}
   FMX.Graphics,
 {$ENDIF}
 {$IFDEF FRAMEWORK_VCL}
-  VCL.Graphics,
+  Graphics,
 {$ENDIF}
+  Graphics,
   ZXing.LuminanceSource,
   ZXing.RGBLuminanceSource,
   ZXing.InvertedLuminanceSource,

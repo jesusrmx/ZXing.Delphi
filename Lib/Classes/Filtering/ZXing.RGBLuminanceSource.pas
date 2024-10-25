@@ -19,18 +19,23 @@
 
 unit ZXing.RGBLuminanceSource;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 uses
-  System.SysUtils,
-  System.UITypes,
-  System.TypInfo,
+  SysUtils,
+  //UITypes,
+  TypInfo,
 {$IFDEF FRAMEWORK_FMX}
   FMX.Graphics,
 {$ENDIF}
 {$IFDEF FRAMEWORK_VCL}
   Winapi.Windows,
-  VCL.Graphics,
+  Graphics,
 {$ENDIF}
+  LCLIntf, FPImage, IntfGraphics,
+  Graphics,
+  ZXing.Common.Types,
   ZXing.LuminanceSource,
   ZXing.BaseLuminanceSource,
   ZXing.Common.Detector.MathUtils;
@@ -86,31 +91,31 @@ type
   /// </summary>
   TRGBLuminanceSource = class(TBaseLuminanceSource)
   private
-    function DetermineBitmapFormat(const rgbRawBytes: TArray<Byte>;
+    function DetermineBitmapFormat(const rgbRawBytes: TBytesArray;
       const width, height: Integer): TBitmapFormat;
 
-    procedure CalculateLuminanceRGB24(const rgbRawBytes: TArray<Byte>);
-    procedure CalculateLuminanceRGB32(const rgbRawBytes: TArray<Byte>);
-    procedure CalculateLuminanceRGBA32(const rgbRawBytes: TArray<Byte>);
-    procedure CalculateLuminanceRGB565(const rgb565RawData: TArray<Byte>);
+    procedure CalculateLuminanceRGB24(const rgbRawBytes: TBytesArray);
+    procedure CalculateLuminanceRGB32(const rgbRawBytes: TBytesArray);
+    procedure CalculateLuminanceRGBA32(const rgbRawBytes: TBytesArray);
+    procedure CalculateLuminanceRGB565(const rgb565RawData: TBytesArray);
 
-    procedure CalculateLuminanceBGR24(const rgbRawBytes: TArray<Byte>);
-    procedure CalculateLuminanceBGR32(const rgbRawBytes: TArray<Byte>);
-    procedure CalculateLuminanceBGRA32(const rgbRawBytes: TArray<Byte>);
+    procedure CalculateLuminanceBGR24(const rgbRawBytes: TBytesArray);
+    procedure CalculateLuminanceBGR32(const rgbRawBytes: TBytesArray);
+    procedure CalculateLuminanceBGRA32(const rgbRawBytes: TBytesArray);
 
-    procedure CalculateLuminanceARGB32(const rgbRawBytes: TArray<Byte>);
+    procedure CalculateLuminanceARGB32(const rgbRawBytes: TBytesArray);
 
     function GetBitmapFormat: TBitmapFormat;
   protected
-    function CreateLuminanceSource(const newLuminances: TArray<Byte>;
+    function CreateLuminanceSource(const newLuminances: TBytesArray;
       const width, height: Integer): TLuminanceSource; override;
-    procedure CalculateLuminance(const rgbRawBytes: TArray<Byte>;
+    procedure CalculateLuminance(const rgbRawBytes: TBytesArray;
       bitmapFormat: TBitmapFormat);
   public
     constructor Create(const width, height: Integer); overload;
-    constructor Create(const rgbRawBytes: TArray<Byte>;
+    constructor Create(const rgbRawBytes: TBytesArray;
       const width, height: Integer); overload;
-    constructor Create(const rgbRawBytes: TArray<Byte>;
+    constructor Create(const rgbRawBytes: TBytesArray;
       const width, height: Integer; const bitmapFormat: TBitmapFormat); overload;
     constructor CreateFromBitmap(const sourceBitmap: TBitmap;
       const width, height: Integer);
@@ -138,7 +143,7 @@ end;
 /// <param name="rgbRawBytes">The RGB raw bytes.</param>
 /// <param name="width">The width.</param>
 /// <param name="height">The height.</param>
-constructor TRGBLuminanceSource.Create(const rgbRawBytes: TArray<Byte>;
+constructor TRGBLuminanceSource.Create(const rgbRawBytes: TBytesArray;
   const width, height: Integer);
 begin
   Create(rgbRawBytes, width, height, TBitmapFormat.RGB24);
@@ -152,7 +157,7 @@ end;
 /// <param name="width">The width.</param>
 /// <param name="height">The height.</param>
 /// <param name="bitmapFormat">The bitmap format.</param>
-constructor TRGBLuminanceSource.Create(const rgbRawBytes: TArray<Byte>;
+constructor TRGBLuminanceSource.Create(const rgbRawBytes: TBytesArray;
   const width, height: Integer; const bitmapFormat: TBitmapFormat);
 begin
   inherited Create(width, height);
@@ -228,6 +233,30 @@ begin
 end;
 {$ENDIF}
 
+// LCL TBitmap implementation
+constructor TRGBLuminanceSource.CreateFromBitmap(const sourceBitmap: TBitmap; const width, height: Integer);
+var
+  x, y, offset: Integer;
+  IntfImg: TLazIntfImage;
+  c: TFPColor;
+begin
+  Self.Create(width, height);
+  sourceBitmap.PixelFormat := pf24bit;
+  IntfImg := sourceBitmap.CreateIntfImage;
+  try
+    for y := 0 to IntfImg.Height - 1 do begin
+      offset := y * FWidth;
+      for x := 0 to IntfImg.Width - 1 do
+      begin
+        c := IntfImg.Colors[x, y];
+        luminances[offset + x] := TMathUtils.Asr(3482*c.Red + 11721*c.Green + 1181*c.Blue, 14);
+      end;
+    end;
+  finally
+    IntfImg.Free;
+  end;
+end;
+
 /// <summary>
 /// Should create a new luminance source with the right class type.
 /// The method is used in methods crop and rotate.
@@ -237,7 +266,7 @@ end;
 /// <param name="height">The height.</param>
 /// <returns></returns>
 function TRGBLuminanceSource.CreateLuminanceSource(
-  const newLuminances: TArray<Byte>;
+  const newLuminances: TBytesArray;
   const width, height: Integer): TLuminanceSource;
 begin
   Result := TRGBLuminanceSource.Create(width, height);
@@ -245,7 +274,7 @@ begin
 end;
 
 function TRGBLuminanceSource.DetermineBitmapFormat(
-  const rgbRawBytes: TArray<Byte>;
+  const rgbRawBytes: TBytesArray;
   const width, height: Integer): TBitmapFormat;
 var
   square,
@@ -264,7 +293,7 @@ begin
   end;
 end;
 
-procedure TRGBLuminanceSource.CalculateLuminance(const rgbRawBytes: TArray<Byte>;
+procedure TRGBLuminanceSource.CalculateLuminance(const rgbRawBytes: TBytesArray;
   bitmapFormat: TBitmapFormat);
 var
   len: Integer;
@@ -282,7 +311,8 @@ begin
         else
            len := Length(luminances);
 
-        Copy(rgbRawBytes, 0, len);
+        raise Exception.Create('ME: wtf 2 - TRGBLuminanceSource.CalculateLuminance');
+        //Copy(rgbRawBytes, 0, len);
       end;
     TBitmapFormat.RGB24 :
       begin
@@ -323,7 +353,7 @@ begin
 end;
 
 procedure TRGBLuminanceSource.CalculateLuminanceRGB565(
-  const rgb565RawData: TArray<Byte>);
+  const rgb565RawData: TBytesArray);
 var
   luminanceIndex,
   index  : Integer;
@@ -361,7 +391,7 @@ begin
 end;
 
 procedure TRGBLuminanceSource.CalculateLuminanceRGB24(
-  const rgbRawBytes: TArray<Byte>);
+  const rgbRawBytes: TBytesArray);
 var
   rgbIndex,
   luminanceIndex,
@@ -386,7 +416,7 @@ begin
 end;
 
 procedure TRGBLuminanceSource.CalculateLuminanceBGR24(
-  const rgbRawBytes: TArray<Byte>);
+  const rgbRawBytes: TBytesArray);
 var
   rgbIndex,
   luminanceIndex,
@@ -411,7 +441,7 @@ begin
 end;
 
 procedure TRGBLuminanceSource.CalculateLuminanceRGB32(
-  const rgbRawBytes: TArray<Byte>);
+  const rgbRawBytes: TBytesArray);
 var
   rgbIndex,
   luminanceIndex,
@@ -436,7 +466,7 @@ begin
 end;
 
 procedure TRGBLuminanceSource.CalculateLuminanceBGR32(
-  const rgbRawBytes: TArray<Byte>);
+  const rgbRawBytes: TBytesArray);
 var
   rgbIndex,
   luminanceIndex,
@@ -461,7 +491,7 @@ begin
 end;
 
 procedure TRGBLuminanceSource.CalculateLuminanceBGRA32(
-  const rgbRawBytes: TArray<Byte>);
+  const rgbRawBytes: TBytesArray);
 var
   rgbIndex,
   luminanceIndex,
@@ -492,7 +522,7 @@ begin
 end;
 
 procedure TRGBLuminanceSource.CalculateLuminanceRGBA32(
-  const rgbRawBytes: TArray<Byte>);
+  const rgbRawBytes: TBytesArray);
 var
   rgbIndex,
   luminanceIndex,
@@ -523,7 +553,7 @@ begin
 end;
 
 procedure TRGBLuminanceSource.CalculateLuminanceARGB32(
-  const rgbRawBytes: TArray<Byte>);
+  const rgbRawBytes: TBytesArray);
 var
   rgbIndex,
   luminanceIndex,

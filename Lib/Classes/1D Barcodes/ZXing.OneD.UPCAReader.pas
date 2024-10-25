@@ -20,10 +20,13 @@ unit ZXing.OneD.UPCAReader;
 
 interface
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
   Math,
+  ZXIng.Common.Types,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray,
   ZXing.BinaryBitmap,
@@ -47,7 +50,7 @@ type
 
   public
     class function DecodeMiddle(const row: IBitArray;
-      const startRange: TArray<Integer>; const resultString: TStringBuilder)
+      const startRange: TIntArray; const resultString: TStringBuilder)
       : Integer; override;
 
     function decode(const image: TBinaryBitmap;
@@ -58,7 +61,7 @@ type
       overload; override;
 
     function decodeRow(const rowNumber: Integer; const row: IBitArray;
-      const startGuardRange: TArray<Integer>;
+      const startGuardRange: TIntArray;
       const hints: TDictionary<TDecodeHintType, TObject>): TReadResult;
       reintroduce; overload;
 
@@ -86,7 +89,7 @@ begin
 end;
 
 class function TUPCAReader.DecodeMiddle(const row: IBitArray;
-  const startRange: TArray<Integer>;
+  const startRange: TIntArray;
   const resultString: TStringBuilder): Integer;
 begin
   result := self.EAN13Reader.DecodeMiddle(row, startRange, resultString)
@@ -100,7 +103,7 @@ begin
 end;
 
 function TUPCAReader.decodeRow(const rowNumber: Integer; const row: IBitArray;
-  const startGuardRange: TArray<Integer>;
+  const startGuardRange: TIntArray;
   const hints: TDictionary<TDecodeHintType, TObject>): TReadResult;
 begin
   result := TUPCAReader.maybeReturnResult

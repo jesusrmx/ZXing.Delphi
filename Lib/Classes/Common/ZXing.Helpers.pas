@@ -19,22 +19,27 @@ unit ZXing.Helpers;
 }
 interface
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
+uses
+  ZXIng.Common.Types;
+
 type
   TArray = class
-    class function Clone(original: TArray<Integer>): TArray<Integer>; static;
-    class function CopyInSameArray(const Input: TArray<Integer>;
-      StartIndex: Integer; Len: Integer): TArray<Integer>; static;
+    class function Clone(original: TIntArray): TIntArray; static;
+    class function CopyInSameArray(const Input: TIntArray;
+      StartIndex: Integer; Len: Integer): TIntArray; static;
   end;
 
 implementation
 
-class function TArray.Clone(original: TArray<Integer>): TArray<Integer>;
+class function TArray.Clone(original: TIntArray): TIntArray;
 var
   i: Integer;
   l: SmallInt;
 begin
   l := Length(original);
-  Result := TArray<Integer>.Create();
+  //Result := TIntArray.Create();
   SetLength(Result, l);
 
   for i := 0 to l - 1 do
@@ -43,8 +48,8 @@ begin
   end;
 end;
 
-class function TArray.CopyInSameArray(const Input: TArray<Integer>;
-  StartIndex: Integer; Len: Integer): TArray<Integer>;
+class function TArray.CopyInSameArray(const Input: TIntArray;
+  StartIndex: Integer; Len: Integer): TIntArray;
 var
   i, y: Integer;
 begin

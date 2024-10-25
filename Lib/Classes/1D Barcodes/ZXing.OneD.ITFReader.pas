@@ -19,12 +19,15 @@
 
 unit ZXing.OneD.ITFReader;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils, 
-  System.Generics.Collections, 
-  Math, 
+  SysUtils, 
+  Generics.Collections, 
+  Math,
+  ZXing.Common.Types,
   ZXing.OneD.OneDReader,
   ZXing.Common.BitArray, 
   ZXing.ReadResult,
@@ -55,24 +58,24 @@ type
     W: Integer = 3;
   private
 
-    class var PATTERNS: TArray<TArray<Integer>>;
-    class var END_PATTERN_REVERSED: TArray<Integer>;
+    class var PATTERNS: T2DIntArray;
+    class var END_PATTERN_REVERSED: TIntArray;
     class var MAX_AVG_VARIANCE: Integer;
     class var MAX_INDIVIDUAL_VARIANCE: Integer;
-    class var DEFAULT_ALLOWED_LENGTHS: TArray<Integer>;
+    class var DEFAULT_ALLOWED_LENGTHS: TIntArray;
 
   class var
-    START_PATTERN: TArray<Integer>;
+    START_PATTERN: TIntArray;
     narrowLineWidth: Integer;
 
-    class function decodeDigit(counters: TArray<Integer>;
+    class function decodeDigit(counters: TIntArray;
       out bestMatch: Integer): boolean; static;
-    function decodeEnd(row: IBitArray): TArray<Integer>;
+    function decodeEnd(row: IBitArray): TIntArray;
     class function skipWhiteSpace(row: IBitArray): Integer; static;
     class function findGuardPattern(row: IBitArray; rowOffset: Integer;
-      pattern: TArray<Integer>): TArray<Integer>; static;
+      pattern: TIntArray): TIntArray; static;
     function validateQuietZone(row: IBitArray; startPattern: Integer): boolean;
-    function decodeStart(row: IBitArray): TArray<Integer>;
+    function decodeStart(row: IBitArray): TIntArray;
     class function decodeMiddle(row: IBitArray;
       payloadStart, payloadEnd: Integer; SBResult: TStringBuilder)
       : boolean; static;
@@ -115,10 +118,10 @@ function TITFReader.decodeRow(const rowNumber: Integer; const row: IBitArray;
   const hints: TDictionary<TDecodeHintType, TObject>): TReadResult;
 var
   allowedLength: Integer;
-  startRange: TArray<Integer>;
-  endRange: TArray<Integer>;
+  startRange: TIntArray;
+  endRange: TIntArray;
   stringResult: string;
-  allowedLengths: TArray<Integer>;
+  allowedLengths: TIntArray;
   maxAllowedLength: Integer;
   len: Integer;
   lengthOK: boolean;
@@ -154,7 +157,7 @@ begin
   maxAllowedLength := LARGEST_DEFAULT_ALLOWED_LENGTH;
   if ((hints <> nil) and hints.ContainsKey(ZXing.DecodeHintType.ALLOWED_LENGTHS)) then
   begin
-    allowedLengths := TArray<Integer>(hints[ZXing.DecodeHintType.ALLOWED_LENGTHS]);
+    allowedLengths := TIntArray(hints[ZXing.DecodeHintType.ALLOWED_LENGTHS]);
     maxAllowedLength := 0
   end;
 
@@ -228,13 +231,13 @@ begin
     TBarcodeFormat.ITF);
 end;
 
-class function TITFReader.decodeDigit(counters: TArray<Integer>;
+class function TITFReader.decodeDigit(counters: TIntArray;
   out bestMatch: Integer): boolean;
 var
   bestVariance: Integer;
   max: Integer;
   i: Integer;
-  pattern: TArray<Integer>;
+  pattern: TIntArray;
   variance: Integer;
 begin
   bestVariance := MAX_AVG_VARIANCE;
@@ -260,10 +263,10 @@ begin
 
 end;
 
-function TITFReader.decodeStart(row: IBitArray): TArray<Integer>;
+function TITFReader.decodeStart(row: IBitArray): TIntArray;
 var
   endStart: Integer;
-  startPattern: TArray<Integer>;
+  startPattern: TIntArray;
 begin
   endStart := skipWhiteSpace(row);
   if (endStart < 0) then
@@ -291,9 +294,9 @@ class function TITFReader.decodeMiddle(row: IBitArray;
 var
   bestMatch: Integer;
   counterDigit: Integer;
-  counterDigitPair: TArray<Integer>;
-  counterBlack: TArray<Integer>;
-  counterWhite: TArray<Integer>;
+  counterDigitPair: TIntArray;
+  counterBlack: TIntArray;
+  counterWhite: TIntArray;
   k: Integer;
   twoK: Integer;
 
@@ -340,10 +343,10 @@ begin
   Result := true;
 end;
 
-function TITFReader.decodeEnd(row: IBitArray): TArray<Integer>;
+function TITFReader.decodeEnd(row: IBitArray): TIntArray;
 var
   endStart: Integer;
-  endPattern: TArray<Integer>;
+  endPattern: TIntArray;
   temp: Integer;
 begin
   row.reverse;
@@ -376,10 +379,10 @@ begin
 end;
 
 class function TITFReader.findGuardPattern(row: IBitArray; rowOffset: Integer;
-  pattern: TArray<Integer>): TArray<Integer>;
+  pattern: TIntArray): TIntArray;
 var
   patternLength: Integer;
-  counters: TArray<Integer>;
+  counters: TIntArray;
   width: Integer;
   isWhite: boolean;
   counterPosition: Integer;
@@ -387,7 +390,7 @@ var
   x: Integer;
 begin
   patternLength := Length(pattern);
-  counters := TArray<Integer>.Create();
+  counters := nil; //TIntArray.Create();
   SetLength(counters, patternLength);
   width := row.Size;
   isWhite := false;

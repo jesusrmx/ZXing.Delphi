@@ -19,10 +19,13 @@
 
 unit ZXing.LuminanceSource;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils;
+  SysUtils,
+  ZXIng.Common.Types;
 
 type
   /// <summary>
@@ -47,7 +50,7 @@ type
     /// larger than width * height bytes on some platforms. Do not modify the contents
     /// of the result.
     /// </returns>
-	function Matrix: TArray<byte>; virtual; abstract;
+	function Matrix: TBytesArray; virtual; abstract;
     /// <summary>
     /// Fetches one row of luminance data from the underlying platform's bitmap. Values range from
     /// 0 (black) to 255 (white). Because Java does not have an unsigned byte type, callers will have
@@ -60,7 +63,7 @@ type
     /// Always use the returned object, and ignore the .length of the array.
     /// </param>
     /// <returns> An array containing the luminance data.</returns>    
-	function getRow(const y: Integer; row: TArray<byte>): TArray<byte>;
+	function getRow(const y: Integer; row: TBytesArray): TBytesArray;
       virtual; abstract;
 
     /// <summary> 
@@ -174,13 +177,13 @@ end;
 
 function TLuminanceSource.ToString(): String;
 var
-  row: TArray<byte>;
+  row: TBytesArray;
   res: TStringBuilder;
   x, y,
   luminance: Integer;
   c: char;
 begin
-  row := TArray<Byte>.Create();
+  row := nil; //TBytesArray.Create();
   SetLength(row, FWidth);
 
   res := TStringBuilder.Create(height * (width + 1));

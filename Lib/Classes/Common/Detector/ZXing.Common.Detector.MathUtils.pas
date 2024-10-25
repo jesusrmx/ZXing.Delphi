@@ -21,7 +21,12 @@ unit ZXing.Common.Detector.MathUtils;
 interface
 
 uses 
+  {$IFDEF FRAMEWORK_VCL}
   System.SysUtils;
+  {$ENDIF}
+  {$IFDEF FRAMEWORK_LCL}
+  SysUtils;
+  {$ENDIF}
 
 type
   TMathUtils = class sealed

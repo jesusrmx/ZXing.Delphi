@@ -1,9 +1,22 @@
 unit ZXIng.ByteSegments;
+
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
+uses
+  {$IFDEF FRAMEWORK_VCL}
+  System.SysUtils,
+  System.Generics.Collections,
+  {$ENDIF}
+  {$IFDEF FRAMEWORK_LCL}
+  SysUtils,
+  Generics.Collections,
+  {$ENDIF}
+  ZXIng.Common.Types;
 
 type
     /// <summary>
-    ///  implements the ByteSegments (which was declared as a TList<TArray<Byte>>
+    ///  implements the ByteSegments (which was declared as a TList<TBytesArray>
     ///  throughout the code as reference-counted interface object)
     /// </summary>
     IByteSegments = Interface
@@ -13,28 +26,26 @@ type
         function GetCapacity: integer;
         procedure SetCapacity(const Value: integer);
         property Capacity:integer read GetCapacity write SetCapacity;
-        function Add(const item:TArray<byte>):integer;
-        function Get(index: integer):TArray<byte>;
+        function Add(const item:TBytesArray):integer;
+        function Get(index: integer):TBytesArray;
      end;
 
 
 function ByteSegmentsCreate:IByteSegments;
 
 implementation
-uses system.SysUtils,
-     Generics.Collections;
 
 type
   TByteSegments = class(TInterfacedObject,IByteSegments)
   private
-     FList: TList<TArray<Byte>>;
+     FList: TList<TBytesArray>;
      function Count:integer;
      procedure Clear;
      constructor Create;
      function GetCapacity: integer;
      procedure SetCapacity(const Value: integer);
-     function Add(const item:TArray<byte>):integer;
-     function Get(index: integer):TArray<byte>;
+     function Add(const item:TBytesArray):integer;
+     function Get(index: integer):TBytesArray;
   public
      destructor Destroy; override;
   end;
@@ -51,7 +62,7 @@ end;
 
 { TByteSegments }
 
-function TByteSegments.Add(const item: TArray<byte>): integer;
+function TByteSegments.Add(const item: TBytesArray): integer;
 begin
    result := FList.Add(item);
 end;
@@ -68,7 +79,7 @@ end;
 
 constructor TByteSegments.Create;
 begin
-   FList := TList<TArray<Byte>>.Create;
+   FList := TList<TBytesArray>.Create;
    inherited Create;
 end;
 
@@ -88,7 +99,7 @@ begin
   FList.Capacity := value;
 end;
 
-function TByteSegments.Get(index: Integer) : TArray<byte>;
+function TByteSegments.Get(index: Integer) : TBytesArray;
 begin
   Result := FList[index];
 end;

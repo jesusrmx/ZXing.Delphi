@@ -19,11 +19,14 @@
 
 unit ZXing.Datamatrix.Internal.Decoder;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
+  ZXIng.Common.Types,
   ZXing.DecodeHintType,
   ZXing.Common.BitMatrix,
   ZXing.Datamatrix.Internal.BitMatrixParser,
@@ -45,7 +48,7 @@ type
     constructor Create;
     destructor Destroy; override;
 
-    function correctErrors(codewordBytes: TArray<Byte>; numDataCodewords: Integer): boolean;
+    function correctErrors(codewordBytes: TBytesArray; numDataCodewords: Integer): boolean;
     function decode(bits: TBitMatrix): TDecoderResult; overload;
     function decode(image: TArray < TArray < boolean >> ): TDecoderResult; overload;
   end;
@@ -108,12 +111,12 @@ var
   i, j: Integer;
   db: TDataBlock;
   parser: TBitMatrixParser;
-  codewords: TArray<Byte>;
+  codewords: TBytesArray;
   dataBlocks: TArray<TDataBlock>;
   dataBlocksCount, totalBytes: Integer;
-  resultBytes: TArray<Byte>;
+  resultBytes: TBytesArray;
   DataBlock: TDataBlock;
-  codewordBytes: TArray<Byte>;
+  codewordBytes: TBytesArray;
   numDataCodewords: Integer;
 begin
   // Construct a parser and read version, error-correction level
@@ -146,7 +149,7 @@ begin
     begin
       Inc(totalBytes, db.numDataCodewords)
     end;
-    resultBytes := TArray<Byte>.Create();
+    resultBytes := nil; //TBytesArray.Create();
     SetLength(resultBytes, totalBytes);
 
     // Error-correct and copy data blocks together into a stream of bytes
@@ -197,14 +200,14 @@ end;
 /// <param name="codewordBytes">data and error correction codewords</param>
 /// <param name="numDataCodewords">number of codewords that are data bytes</param>
 /// </summary>
-function TDataMatrixDecoder.correctErrors(codewordBytes: TArray<Byte>; numDataCodewords: Integer): boolean;
+function TDataMatrixDecoder.correctErrors(codewordBytes: TBytesArray; numDataCodewords: Integer): boolean;
 var
   i, numCodewords, numECCodewords: Integer;
-  codewordsInts: TArray<Integer>;
+  codewordsInts: TIntArray;
 begin
   numCodewords := Length(codewordBytes);
   // First read into an array of ints
-  codewordsInts := TArray<Integer>.Create();
+  codewordsInts := nil; // TIntArray.Create();
   SetLength(codewordsInts, numCodewords);
   for i := 0 to Pred(numCodewords) do
   begin

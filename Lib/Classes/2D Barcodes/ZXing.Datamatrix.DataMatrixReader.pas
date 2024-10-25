@@ -19,11 +19,14 @@
 
 unit ZXing.Datamatrix.DataMatrixReader;
 
+{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+
 interface
 
 uses
-  System.SysUtils,
-  System.Generics.Collections,
+  SysUtils,
+  Generics.Collections,
+  ZXIng.Common.Types,
   ZXing.Common.Detector.MathUtils,
   Math,
   ZXing.Common.BitArray,
@@ -59,7 +62,7 @@ type
     /// </summary>
     class function extractPureBits(const image: TBitMatrix): TBitMatrix; static;
 
-    class function moduleSize(const leftTopBlack: TArray<Integer>;
+    class function moduleSize(const leftTopBlack: TIntArray;
       const image: TBitMatrix; var moduleSize: Integer): Boolean; static;
   public
     constructor Create;
@@ -85,7 +88,7 @@ constructor TDataMatrixReader.Create;
 begin
   inherited;
   FDecoder := TDataMatrixDecoder.Create;
-  NO_POINTS := TArray<IResultPoint>.Create();
+  NO_POINTS := nil; //TArray<IResultPoint>.Create();
 end;
 
 destructor TDataMatrixReader.Destroy;
@@ -174,7 +177,7 @@ class function TDataMatrixReader.extractPureBits(const image: TBitMatrix)
   : TBitMatrix;
 var
   moduleSize: Integer;
-  leftTopBlack, rightBottomBlack: TArray<Integer>;
+  leftTopBlack, rightBottomBlack: TIntArray;
   top, bottom, left, right: Integer;
   matrixWidth, matrixHeight: Integer;
   nudge: Integer;
@@ -223,7 +226,7 @@ begin
   Result := bits;
 end;
 
-class function TDataMatrixReader.moduleSize(const leftTopBlack: TArray<Integer>;
+class function TDataMatrixReader.moduleSize(const leftTopBlack: TIntArray;
   const image: TBitMatrix; var moduleSize: Integer): Boolean;
 var
   width, x, y: Integer;
