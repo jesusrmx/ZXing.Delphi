@@ -3,14 +3,8 @@ unit MainForm;
 interface
 
 uses
-  {$IFDEF FRAMEWORK_VCL}
-  Winapi.Windows, Winapi.Messages, SysUtils, Variants, Classes, Graphics,
+  Windows, Messages, SysUtils, Variants, Classes, Graphics, LazUTF8,
   Controls, Forms, Dialogs, StdCtrls, ExtCtrls;
-  {$ENDIF}
-  {$IFDEF FRAMEWORK_LCL}
-  Windows, Messages, SysUtils, Variants, Classes, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, ExtCtrls;
-  {$ENDIF}
 
 type
   TmainFrm = class(TForm)
@@ -43,7 +37,9 @@ procedure TmainFrm.btnLoadFromFileClick(Sender: TObject);
 var  ReadResult: TReadResult;
      ScanManager: TScanManager;
      bmp:Graphics.TBitmap; // just to be sure we are really using VCL bitmaps
+     aFile: string;
 begin
+  aFile := ExpandFileName('../
   if not OpenDlg.Execute then exit;
   image.Picture.LoadFromFile(openDlg.FileName);
   ReadResult := nil;
