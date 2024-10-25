@@ -145,3 +145,9 @@ _ReSharper*/
 *.sbr
 obj/
 [Bb]in
+
+### Lazarus ####
+*.ppu
+*.o
+*.or
+*.lps
