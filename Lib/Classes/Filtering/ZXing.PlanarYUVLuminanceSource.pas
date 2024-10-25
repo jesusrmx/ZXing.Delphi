@@ -19,11 +19,20 @@
 
 unit ZXing.PlanarYUVLuminanceSource;
 
+{$Mode Delphi}
+
 interface
 uses
+  {$IFDEF FRAMEWORK_VCL}
   System.SysUtils,
   System.UITypes,
   System.TypInfo,
+  {$ENDIF}
+  {$IFDEF FRAMEWORK_LCL}
+  SysUtils,
+  TypInfo,
+  {$ENDIF}
+  ZXing.Common.Types,
   ZXing.LuminanceSource,
   ZXing.BaseLuminanceSource;
 
@@ -33,7 +42,7 @@ type
   /// </summary>
   TPlanarYUVLuminanceSource = class(TBaseLuminanceSource)
   private
-    yuvData : TArray<Byte>;
+    yuvData : TBytesArray;
     dataWidth,
     dataHeight,
     left, top : Integer;
@@ -43,23 +52,23 @@ type
 
     procedure reverseHorizontal(const width, height: Integer);
   protected
-    function CreateLuminanceSource(const newLuminances: TArray<Byte>;
+    function CreateLuminanceSource(const newLuminances: TBytesArray;
       const width, height: Integer): TLuminanceSource; override;
   public
-    constructor Create(const yuvData: TArray<Byte>;
+    constructor Create(const yuvData: TBytesArray;
       const dataWidth, dataHeight, left, top, width, height: Integer;
       const reverseHoriz: Boolean); overload;
-    constructor Create(const luminances: TArray<Byte>;
+    constructor Create(const luminances: TBytesArray;
       const width, height: Integer); overload;
 
-    function getRow(const y: Integer; row: TArray<Byte>): TArray<Byte>; override;
+    function getRow(const y: Integer; row: TBytesArray): TBytesArray; override;
     function crop(const left, top,
       width, height: Integer): TLuminanceSource; override;
 
-    function Matrix: TArray<Byte>; override;
+    function Matrix: TBytesArray; override;
     function CropSupported: Boolean; override;
 
-    function renderThumbnail(): TArray<Integer>;
+    function renderThumbnail(): TBytesArray;
     function ThumbnailWidth(): Integer;
     function ThumbnailHeight(): Integer;
 
@@ -78,7 +87,7 @@ implementation
 /// <param name="width">The width.</param>
 /// <param name="height">The height.</param>
 /// <param name="reverseHoriz">if set to <c>true</c> [reverse horiz].</param>
-constructor TPlanarYUVLuminanceSource.Create(const yuvData: TArray<Byte>; 
+constructor TPlanarYUVLuminanceSource.Create(const yuvData: TBytesArray; 
   const dataWidth, dataHeight, left, top, width, height: Integer; 
   const reverseHoriz: Boolean);
 begin
@@ -104,7 +113,7 @@ end;
 /// <param name="luminances">The luminances.</param>
 /// <param name="width">The width.</param>
 /// <param name="height">The height.</param>
-constructor TPlanarYUVLuminanceSource.Create(const luminances: TArray<Byte>; 
+constructor TPlanarYUVLuminanceSource.Create(const luminances: TBytesArray; 
   const width, height: Integer);
 begin
   inherited Create(width, height);
@@ -131,7 +140,7 @@ end;
 /// An array containing the luminance data.
 /// </returns>
  function TPlanarYUVLuminanceSource.getRow(const y: Integer;
-   row: TArray<Byte>): TArray<Byte>;
+   row: TBytesArray): TBytesArray;
  var
    width,
    offset: Integer;
@@ -144,7 +153,7 @@ end;
   if ((row = nil) or (Length(row) < width)) then
   begin
     row := nil;
-    row := TArray<Byte>.Create();
+    //row := TBytesArray.Create();
     SetLength(row, width);
   end;
 
@@ -157,7 +166,7 @@ end;
 /// <summary>
 ///
 /// </summary>
-function TPlanarYUVLuminanceSource.Matrix: TArray<Byte>;
+function TPlanarYUVLuminanceSource.Matrix: TBytesArray;
 var
   width,
   height,
@@ -165,7 +174,7 @@ var
   inputOffset,
   outputOffset : Integer;
   matrix,
-  yuv: TArray<Byte>;
+  yuv: TBytesArray;
 begin
   width := Self.Width;
   height := Self.Height;
@@ -179,7 +188,7 @@ begin
   end;
 
   area := width * height;
-  matrix := TArray<Byte>.Create();
+  matrix := nil; //TBytesArray.Create();
   SetLength(matrix, area);
   inputOffset := (top * dataWidth) + left;
 
@@ -239,12 +248,12 @@ end;
 /// Renders the cropped greyscale bitmap.
 /// </summary>
 /// <returns></returns>
-function TPlanarYUVLuminanceSource.renderThumbnail(): TArray<Integer>;
+function TPlanarYUVLuminanceSource.renderThumbnail(): TBytesArray;
 var
   width,
   height : Integer;
-  pixels : TArray<Integer>;
-  yuv : TArray<Byte>;
+  pixels : TBytesArray;
+  yuv : TBytesArray;
   x, y,
   inputOffset,
   outputOffset : Integer;
@@ -252,7 +261,7 @@ var
 begin
   width := Self.Width div THUMBNAIL_SCALE_FACTOR;
   height := Self.Height div THUMBNAIL_SCALE_FACTOR;
-  pixels := TArray<Integer>.Create();
+  pixels := nil; //TBytesArray.Create();
   SetLength(pixels, (width * height));
 
   yuv := yuvData;
@@ -289,7 +298,7 @@ end;
 
 procedure TPlanarYUVLuminanceSource.reverseHorizontal(const width, height: Integer);
 var
-  yuvData : TArray<Byte>;
+  yuvData : TBytesArray;
   y,
   x1, x2,
   middle,
@@ -318,7 +327,7 @@ begin
 end;
 
 function TPlanarYUVLuminanceSource.CreateLuminanceSource(
-  const newLuminances: TArray<Byte>;
+  const newLuminances: TBytesArray;
   const width, height: Integer): TLuminanceSource;
 begin
   Result := TPlanarYUVLuminanceSource.Create(newLuminances, width, height);
