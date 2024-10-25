@@ -3,14 +3,8 @@ unit MainForm;
 interface
 
 uses
-  {$IFDEF FRAMEWORK_VCL}
-  Winapi.Windows, Winapi.Messages, SysUtils, Variants, Classes, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, ExtCtrls;
-  {$ENDIF}
-  {$IFDEF FRAMEWORK_LCL}
-  Windows, Messages, SysUtils, Variants, Classes, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, ExtCtrls;
-  {$ENDIF}
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
   TmainFrm = class(TForm)
@@ -31,18 +25,19 @@ var
   mainFrm: TmainFrm;
 
 implementation
-uses
+uses vcl.imaging.pngImage,
+     vcl.imaging.jpeg,
      ZXing.ReadResult,
      ZXing.BarCodeFormat,
      ZXing.ScanManager;
 
 
-{$R *.lfm}
+{$R *.dfm}
 
 procedure TmainFrm.btnLoadFromFileClick(Sender: TObject);
 var  ReadResult: TReadResult;
      ScanManager: TScanManager;
-     bmp:Graphics.TBitmap; // just to be sure we are really using VCL bitmaps
+     bmp:VCL.Graphics.TBitmap; // just to be sure we are really using VCL bitmaps
 begin
   if not OpenDlg.Execute then exit;
   image.Picture.LoadFromFile(openDlg.FileName);
