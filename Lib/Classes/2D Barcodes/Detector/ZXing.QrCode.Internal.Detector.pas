@@ -147,13 +147,13 @@ begin
   moduleSizeEst2 := self.sizeOfBlackWhiteBlackRunBothWays(Floor(otherPattern.X),
     Floor(otherPattern.Y), Floor(pattern.X), Floor(pattern.Y));
 
-  if (moduleSizeEst1 = -1) then
+  if IsNan(moduleSizeEst1) then
   begin
     Result := (moduleSizeEst2 / 7);
     exit
   end;
 
-  if (moduleSizeEst2 = -1) then
+  if IsNan(moduleSizeEst2) then
   begin
     Result := (moduleSizeEst1 / 7);
     exit
