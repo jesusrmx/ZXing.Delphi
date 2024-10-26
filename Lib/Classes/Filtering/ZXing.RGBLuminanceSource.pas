@@ -241,7 +241,6 @@ var
   c: TFPColor;
 begin
   Self.Create(width, height);
-  sourceBitmap.PixelFormat := pf24bit;
   IntfImg := sourceBitmap.CreateIntfImage;
   try
     for y := 0 to IntfImg.Height - 1 do begin
