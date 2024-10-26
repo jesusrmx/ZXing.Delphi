@@ -151,3 +151,7 @@ obj/
 *.o
 *.or
 *.lps
+*.compiled
+zxing_test_lazarus
+laztestapp
+**/backup
