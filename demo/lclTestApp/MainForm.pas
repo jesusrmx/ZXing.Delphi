@@ -3,7 +3,7 @@ unit MainForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, FileUtil,
+  SysUtils, Variants, Classes, Graphics, FileUtil,
   Controls, Forms, Dialogs, StdCtrls, ExtCtrls;
 
 type
@@ -27,7 +27,7 @@ var
 implementation
 uses
      ZXing.ReadResult,
-     ZXing.BarCodeFormat,
+     ZXing.BarcodeFormat,
      ZXing.ScanManager;
 
 

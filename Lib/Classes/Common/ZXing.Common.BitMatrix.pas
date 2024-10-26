@@ -70,7 +70,7 @@ type
     procedure flip(x: Integer; y: Integer);
     function getBottomRightOnBit: TIntArray;
     function getEnclosingRectangle: TIntArray;
-    function GetHashCode: Integer; override;
+    function GetHashCode: PtrInt; override;
     function getRow(const y: Integer; row: IBitArray): IBitArray;
     function getTopLeftOnBit: TIntArray;
     procedure Rotate180;
@@ -323,7 +323,7 @@ begin
   Result := TIntArray.Create(left, top, widthTmp, heightTmp);
 end;
 
-function TBitMatrix.GetHashCode: Integer;
+function TBitMatrix.GetHashCode: PtrInt;
 var
   bit, hash: Integer;
 begin

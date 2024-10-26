@@ -49,7 +49,7 @@ type
     /// <returns>
     /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
     /// </returns>
-    function GetHashCode(): Integer; override;
+    function GetHashCode(): PtrInt; override;
     /// <summary>
     /// Returns a <see cref="String"/> that represents this instance.
     /// </summary>
@@ -148,7 +148,7 @@ begin
     Result := ((otherPoint.x = Fx) and (otherPoint.y = Fy));
 end;
 
-function TResultPoint.GetHashCode: Integer;
+function TResultPoint.GetHashCode: PtrInt;
 begin
   Result := 31 * ((bytesX[0] shl 24) + (bytesX[1] shl 16) + (bytesX[2] shl 8) +
     bytesX[3]) + (bytesY[0] shl 24) + (bytesY[1] shl 16) + (bytesY[2] shl 8) +
