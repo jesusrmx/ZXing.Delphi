@@ -10,8 +10,13 @@
       <PathDelim Value="\"/>
       <SearchPaths>
         <OtherUnitFiles Value="Classes;Classes\1D Barcodes;Classes\2D Barcodes;Classes\2D Barcodes\Decoder;Classes\2D Barcodes\Detector;Classes\Common;Classes\Common\Detector;Classes\Common\ReedSolomon;Classes\Filtering"/>
-        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)\"/>
+        <UnitOutputDirectory Value="lib\$(TargetCPU)-$(TargetOS)"/>
       </SearchPaths>
+      <Linking>
+        <Debugging>
+          <DebugInfoType Value="dsDwarf3"/>
+        </Debugging>
+      </Linking>
       <Other>
         <CustomOptions Value="-dFRAMEWORK_LCL"/>
       </Other>
