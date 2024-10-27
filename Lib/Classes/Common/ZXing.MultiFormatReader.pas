@@ -183,6 +183,7 @@ procedure TMultiFormatReader.Set_Hints(const Value: TDictionary<TDecodeHintType,
 var
   useCode39CheckDigit, useCode39ExtendedMode: Boolean;
   formats: TList<TBarcodeFormat>;
+  fmt:TObject;
 begin
   FHints := Value;
 
@@ -196,8 +197,8 @@ begin
   end
   else
   begin
-    formats := Value[ZXing.DecodeHintType.POSSIBLE_FORMATS]
-      as TList<TBarcodeFormat>
+    fmt := Value[ZXing.DecodeHintType.POSSIBLE_FORMATS];
+    formats := pointer(fmt);
   end;
 
   // add readers from the hints
