@@ -27,6 +27,7 @@ type
   published
     procedure AllCode39;
     procedure AllUpcA;
+    procedure AllUpcE;
   end;
 
 implementation
@@ -164,6 +165,55 @@ begin
   end;
 end;
 
+procedure TZXingDelphiTest.AllUpcE;
+var
+  result: TReadResult;
+begin
+  try
+    result := Decode('upce.png', TBarcodeFormat.UPC_E);
+    AssertNotNull(result, ' nil result ');
+    AssertTrue(result.Text.Equals('01234565'), 'upce result Text Incorrect: ' + result.Text);
+
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('upceHiddenInBottom.png', TBarcodeFormat.UPC_E);
+    AssertNotNull(result, ' nil result ');
+    AssertTrue(result.Text.Equals('01234565'), 'upce result Text Incorrect: ' + result.Text);
+
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('upc-e_09999008.png', TBarcodeFormat.UPC_E);
+    AssertNotNull(result, ' nil result ');
+    AssertTrue(result.Text.Equals('09999008'), 'upce result Text Incorrect: ' + result.Text);
+
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('upc-e_09999992.png', TBarcodeFormat.UPC_E);
+    AssertNotNull(result, ' nil result ');
+    AssertTrue(result.Text.Equals('09999992'), 'upce result Text Incorrect: ' + result.Text);
+
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('upce 2.png', TBarcodeFormat.UPC_E);
+    AssertNotNull(result, ' nil result ');
+    AssertTrue(result.Text.Equals('01234565'), 'upce result Text Incorrect: ' + result.Text);
+
+  finally
+    FreeAndNil(result);
+  end;
+end;
 
 
 initialization
