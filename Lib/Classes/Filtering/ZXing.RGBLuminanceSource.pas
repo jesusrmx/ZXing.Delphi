@@ -239,6 +239,7 @@ var
   x, y, offset: Integer;
   IntfImg: TLazIntfImage;
   c: TFPColor;
+  r, g, b: byte;
 begin
   Self.Create(width, height);
   IntfImg := sourceBitmap.CreateIntfImage;
@@ -248,7 +249,10 @@ begin
       for x := 0 to IntfImg.Width - 1 do
       begin
         c := IntfImg.Colors[x, y];
-        luminances[offset + x] := TMathUtils.Asr(3482*c.Red + 11721*c.Green + 1181*c.Blue, 14);
+        r := c.Red shr 8;
+        g := c.Green shr 8;
+        b := c.Blue shr 8;
+        luminances[offset + x] := TMathUtils.Asr(3482*r + 11721*g + 1181*b, 14);
       end;
     end;
   finally
