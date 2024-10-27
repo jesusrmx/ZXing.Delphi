@@ -16,6 +16,8 @@ uses
 
 type
 
+  { TZXingDelphiTest }
+
   TZXingDelphiTest= class(TTestCase)
   private
     function GetImage(Filename: string): TBitmap;
@@ -23,7 +25,10 @@ type
   public
     class var fLastFilename: string;
     class procedure AssertNotNull(aResult: TReadResult; msg:string); overload;
+    class procedure AssertNull(aResult: TReadResult; msg:string); overload;
     class procedure AssertTrue(aCondition: boolean; msg: string); overload;
+    class procedure AssertEquals(Expected, Actual: string; ignorecase:boolean); overload;
+    class procedure AssertContains(str, substr: string; ignorecase:boolean);
   published
     procedure AllCode39;
     procedure AllUpcA;
@@ -71,9 +76,26 @@ begin
   AssertNotNull(fLastFilename+':'+msg, aResult);
 end;
 
+class procedure TZXingDelphiTest.AssertNull(aResult: TReadResult; msg: string);
+begin
+  AssertNull(fLastFilename+':'+msg, aResult);
+end;
+
 class procedure TZXingDelphiTest.AssertTrue(aCondition:boolean;msg:string);
 begin
   AssertTrue(msg, aCondition);
+end;
+
+class procedure TZXingDelphiTest.AssertEquals(Expected, Actual: string;
+  ignorecase: boolean);
+begin
+  AssertEquals('---', Expected, Actual);
+end;
+
+class procedure TZXingDelphiTest.AssertContains(str, substr: string;
+  ignorecase: boolean);
+begin
+  AssertTrue(pos(substr, str)>0);
 end;
 
 procedure TZXingDelphiTest.AllCode39;
@@ -591,7 +613,7 @@ begin
   try
     result := Decode('utf8-test.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result ');
-    Assert.AreEqual(#$0440#$0443#$0301#$0441#$0441#$043A#$0438#$0439#$20#$044F#$0437#$044B#$0301#$043A#$2C#$20'russkij'#$20'jazyk'#$20#$E8#$E0#$F2#$F9, result.Text, false);
+    AssertEquals(#$0440#$0443#$0301#$0441#$0441#$043A#$0438#$0439#$20#$044F#$0437#$044B#$0301#$043A#$2C#$20'russkij'#$20'jazyk'#$20#$E8#$E0#$F2#$F9, result.Text, false);
 
   finally
     FreeAndNil(result);
@@ -600,7 +622,7 @@ begin
   try
     result := Decode('contact information.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result ');
-    Assert.Contains(result.Text, 'Joe@bloggs.com', false);
+    AssertContains(result.Text, 'Joe@bloggs.com', false);
 
   finally
     FreeAndNil(result);
@@ -609,7 +631,7 @@ begin
   try
     result := Decode('Calendar.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result ');
-    Assert.Contains(result.Text, 'Christmas', false);
+    AssertContains(result.Text, 'Christmas', false);
 
   finally
     FreeAndNil(result);
@@ -618,7 +640,7 @@ begin
   try
     result := Decode('GeoLocation.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result ');
-    Assert.Contains(result.Text, '52.052490', false);
+    AssertContains(result.Text, '52.052490', false);
 
   finally
     FreeAndNil(result);
@@ -627,7 +649,7 @@ begin
   try
     result := Decode('SMS.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result ');
-    Assert.Contains(result.Text, '0777777', false);
+    AssertContains(result.Text, '0777777', false);
 
   finally
     FreeAndNil(result);
@@ -636,7 +658,7 @@ begin
   try
     result := Decode('url.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result ');
-    Assert.Contains(result.Text, 'meetheed.com', false);
+    AssertContains(result.Text, 'meetheed.com', false);
 
   finally
     FreeAndNil(result);
@@ -645,7 +667,7 @@ begin
   try
     result := Decode('email.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result ');
-    Assert.Contains(result.Text, 'joe@bloggs.com', false);
+    AssertContains(result.Text, 'joe@bloggs.com', false);
 
   finally
     FreeAndNil(result);
@@ -654,7 +676,7 @@ begin
   try
     result := Decode('Phone.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result ');
-    Assert.Contains(result.Text, '077777777', false);
+    AssertContains(result.Text, '077777777', false);
 
   finally
     FreeAndNil(result);
@@ -663,7 +685,7 @@ begin
   try
     result := Decode('Text.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result ');
-    Assert.Contains(result.Text, 'just a lot of plain text', false);
+    AssertContains(result.Text, 'just a lot of plain text', false);
 
   finally
     FreeAndNil(result);
@@ -673,7 +695,7 @@ begin
    try
     result := Decode('QR-bug-overflow.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result');
-    Assert.Contains(result.Text, '1653015096', false);
+    AssertContains(result.Text, '1653015096', false);
 
   finally
     FreeAndNil(result);
@@ -683,7 +705,7 @@ begin
     try
     result := Decode('QRContainsHex10.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result');
-    Assert.Contains(result.Text, '140#104#20231123 09:00:00', false);
+    AssertContains(result.Text, '140#104#20231123 09:00:00', false);
   finally
     FreeAndNil(result);
   end;
