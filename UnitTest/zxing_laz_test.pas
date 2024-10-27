@@ -21,6 +21,7 @@ type
     function GetImage(Filename: string): TBitmap;
     function Decode(Filename: String; CodeFormat: TBarcodeFormat; additionalHints: TDictionary<TDecodeHintType, TObject> = nil): TReadResult;
   public
+    class var fLastFilename: string;
     class procedure AssertNotNull(aResult: TReadResult; msg:string); overload;
     class procedure AssertTrue(aCondition: boolean; msg: string); overload;
   published
@@ -36,6 +37,7 @@ var
 begin
   pic := TPicture.Create;
   try
+    fLastFilename := filename;
     fs := ExpandFileName(ProgramDirectoryWithBundle + 'Images/' + filename);
     pic.LoadFromFile(fs);
     result := TBitmap.Create;
@@ -63,7 +65,7 @@ end;
 
 class procedure TZXingDelphiTest.AssertNotNull(aResult:TReadResult;msg:string);
 begin
-  AssertNotNull(msg, aResult);
+  AssertNotNull(fLastFilename+':'+msg, aResult);
 end;
 
 class procedure TZXingDelphiTest.AssertTrue(aCondition:boolean;msg:string);
