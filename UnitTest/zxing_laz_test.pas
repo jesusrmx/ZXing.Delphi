@@ -26,6 +26,7 @@ type
     class procedure AssertTrue(aCondition: boolean; msg: string); overload;
   published
     procedure AllCode39;
+    procedure AllUpcA;
   end;
 
 implementation
@@ -116,6 +117,47 @@ begin
     result := Decode('Code 39 Axtel.png', TBarcodeFormat.CODE_39);
     AssertNotNull(result, ' nil result ');
     AssertTrue(result.Text.Contains('AXTEL'), 'Code 39 result Text incorrect: ' + result.Text);
+
+  finally
+    FreeAndNil(result);
+  end;
+end;
+
+procedure TZXingDelphiTest.AllUpcA;
+var
+  result: TReadResult;
+begin
+  try
+    result := Decode('upca.png', TBarcodeFormat.UPC_A);
+    AssertNotNull(result, ' nil result ');
+    AssertTrue(result.Text.Equals('123456789012'), 'upca result Text Incorrect: ' + result.Text);
+
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('upcaHiddenInBottom.png', TBarcodeFormat.UPC_A);
+    AssertNotNull(result, ' nil result ');
+    AssertTrue(result.Text.Equals('123456789012'), 'upca result Text Incorrect: ' + result.Text);
+
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('upca 2.gif', TBarcodeFormat.UPC_A);
+    AssertNotNull(result, ' nil result ');
+    AssertTrue(result.Text.Equals('725272730706'), 'upca 1 result Text Incorrect: ' + result.Text);
+
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('upca 3.gif', TBarcodeFormat.UPC_A);
+    AssertNotNull(result, ' nil result ');
+    AssertTrue(result.Text.Equals('232323232312'), 'upca 2 result Text Incorrect: ' + result.Text);
 
   finally
     FreeAndNil(result);
