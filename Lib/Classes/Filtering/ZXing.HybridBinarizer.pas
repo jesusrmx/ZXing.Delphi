@@ -133,6 +133,8 @@ begin
       calculateThresholdForBlock(luminances, subWidth, subHeight, width, height,
         blackPoints, newMatrix);
 
+      SaveStringToFile('BinarizeEntireImage.txt', newMatrix.ToString);
+
       self.matrix := newMatrix;
     end;
 

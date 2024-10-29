@@ -25,7 +25,23 @@ type
   T2DIntArray = TArray<TArray<Integer>>;
   {$ENDIF}
 
+  procedure SaveStringToFile(aFilename, s:String);
+
 implementation
+
+uses classes;
+
+procedure SaveStringToFile(aFilename, s:String);
+var
+  st: TStringStream;
+begin
+  st := TStringStream.Create(s);
+  try
+    st.SaveToFile(aFilename);
+  finally
+    st.Free;
+  end;
+end;
 
 end.
 

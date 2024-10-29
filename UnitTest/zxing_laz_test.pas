@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, fpcunit, testutils, testregistry, FileUtil,
-  Graphics,
+  FPImage,FPReadPNG,FPReadBMP,FPReadJPEG,FPReadTiff,FPReadGif,
   Generics.Collections,
   ZXing.DecodeHintType,
   ZXing.ScanManager,
@@ -20,7 +20,7 @@ type
 
   TZXingDelphiTest= class(TTestCase)
   private
-    function GetImage(Filename: string): TBitmap;
+    function GetImage(Filename: string): TFPCustomImage;
     function Decode(Filename: String; CodeFormat: TBarcodeFormat; additionalHints: TDictionary<TDecodeHintType, TObject> = nil): TReadResult;
   public
     class var fLastFilename: string;
@@ -38,35 +38,28 @@ type
 
 implementation
 
-function TZXingDelphiTest.GetImage(Filename:string):TBitmap;
+function TZXingDelphiTest.GetImage(Filename:string):TFPCustomImage;
 var
-  pic: TPicture;
   fs: string;
 begin
-  pic := TPicture.Create;
-  try
-    fLastFilename := filename;
-    fs := ExpandFileName(ProgramDirectoryWithBundle + 'Images/' + filename);
-    pic.LoadFromFile(fs);
-    result := TBitmap.Create;
-    result.Assign(pic.Graphic);
-  finally
-    pic.Free;
-  end;
+  fLastFilename := filename;
+  fs := ExpandFileName(ProgramDirectoryWithBundle + 'Images/' + filename);
+  result := TFPMemoryImage.Create(10, 10);
+  result.LoadFromFile(fs);
 end;
 
 function TZXingDelphiTest.Decode(Filename:String;CodeFormat:TBarcodeFormat;
   additionalHints:TDictionary<TDecodeHintType,TObject>):TReadResult;
 var
-  bmp: TBitmap;
+  img: TFPCustomImage;
   ScanManager: TScanManager;
 begin
-  bmp := GetImage(Filename);
+  img := GetImage(Filename);
   try
     ScanManager := TScanManager.Create(CodeFormat, additionalHints);
-    result := ScanManager.Scan(bmp);
+    result := ScanManager.Scan(img);
   finally
-    FreeAndNil(bmp);
+    FreeAndNil(img);
     FreeAndNil(ScanManager);
   end;
 end;

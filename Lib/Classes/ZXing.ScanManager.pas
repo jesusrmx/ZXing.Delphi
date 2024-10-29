@@ -13,7 +13,7 @@ uses
 {$IFDEF FRAMEWORK_VCL}
   Graphics,
 {$ENDIF}
-  Graphics,
+  fpimage,
   ZXing.LuminanceSource,
   ZXing.RGBLuminanceSource,
   ZXing.InvertedLuminanceSource,
@@ -41,7 +41,8 @@ type
   public
     destructor Destroy; override;
 
-    function Scan(const pBitmapForScan: TBitmap): TReadResult;
+    //function Scan(const pBitmapForScan: TBitmap): TReadResult;
+    function Scan(const pBitmapForScan: TFPCustomImage): TReadResult;
     constructor Create(const format: TBarcodeFormat;
       Hints: TDictionary<TDecodeHintType, TObject>);
 
@@ -142,7 +143,7 @@ begin
   Result.Hints := FHints;
 end;
 
-function TScanManager.Scan(const pBitmapForScan: TBitmap): TReadResult;
+function TScanManager.Scan(const pBitmapForScan:TFPCustomImage):TReadResult;
 var
   LuminanceSource, InvLuminanceSource: TLuminanceSource;
   HybridBinarizer: THybridBinarizer;
