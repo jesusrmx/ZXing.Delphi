@@ -232,7 +232,6 @@ begin
 end;
 {$ENDIF}
 
-{.$define Debug}
 // LCL TBitmap implementation
 constructor TRGBLuminanceSource.CreateFromBitmap(const sourceBitmap: TFPCustomImage; const width, height: Integer);
 var

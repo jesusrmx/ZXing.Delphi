@@ -133,7 +133,9 @@ begin
       calculateThresholdForBlock(luminances, subWidth, subHeight, width, height,
         blackPoints, newMatrix);
 
+      {$IFDEF DEBUG}
       SaveStringToFile('BinarizeEntireImage.txt', newMatrix.ToString);
+      {$ENDIF}
 
       self.matrix := newMatrix;
     end;

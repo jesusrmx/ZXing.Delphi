@@ -25,10 +25,13 @@ type
   T2DIntArray = TArray<TArray<Integer>>;
   {$ENDIF}
 
+  {$IFDEF DEBUG}
   procedure SaveStringToFile(aFilename, s:String);
+  {$ENDIF}
 
 implementation
 
+{$IFDEF DEBUG}
 uses classes;
 
 procedure SaveStringToFile(aFilename, s:String);
@@ -42,6 +45,7 @@ begin
     st.Free;
   end;
 end;
+{$ENDIF}
 
 end.
 
