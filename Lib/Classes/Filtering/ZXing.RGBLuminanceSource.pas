@@ -33,8 +33,7 @@ uses
   Winapi.Windows,
   Graphics,
 {$ENDIF}
-  LCLIntf, FPImage, IntfGraphics,
-  Graphics,
+  LCLIntf, fpcanvas, fpimage, fpimgcanv, fpwritebmp,
   ZXing.Common.Types,
   ZXing.LuminanceSource,
   ZXing.BaseLuminanceSource,
@@ -117,7 +116,7 @@ type
       const width, height: Integer); overload;
     constructor Create(const rgbRawBytes: TBytesArray;
       const width, height: Integer; const bitmapFormat: TBitmapFormat); overload;
-    constructor CreateFromBitmap(const sourceBitmap: TBitmap;
+    constructor CreateFromBitmap(const sourceBitmap: TFPCustomImage;
       const width, height: Integer);
 
     property BitmapFormat : TBitmapFormat read GetBitmapFormat;
@@ -233,30 +232,49 @@ begin
 end;
 {$ENDIF}
 
+{.$define Debug}
 // LCL TBitmap implementation
-constructor TRGBLuminanceSource.CreateFromBitmap(const sourceBitmap: TBitmap; const width, height: Integer);
+constructor TRGBLuminanceSource.CreateFromBitmap(const sourceBitmap: TFPCustomImage; const width, height: Integer);
 var
   x, y, offset: Integer;
-  IntfImg: TLazIntfImage;
+  r, g, b, v: byte;
   c: TFPColor;
-  r, g, b: byte;
+  {$ifdef Debug}
+  img: TFPMemoryImage;
+  writer: TFPCustomimageWriter;
+  w: word;
+  {$endif}
 begin
   Self.Create(width, height);
-  IntfImg := sourceBitmap.CreateIntfImage;
+  {$ifdef Debug}
+  img := TFPMemoryImage.Create(width, height);
+  {$endif}
   try
-    for y := 0 to IntfImg.Height - 1 do begin
+    for y := 0 to sourceBitmap.Height - 1 do begin
       offset := y * FWidth;
-      for x := 0 to IntfImg.Width - 1 do
+      for x := 0 to sourceBitmap.Width - 1 do
       begin
-        c := IntfImg.Colors[x, y];
+        c := sourceBitmap.Colors[x, y];
         r := c.Red shr 8;
         g := c.Green shr 8;
         b := c.Blue shr 8;
-        luminances[offset + x] := TMathUtils.Asr(3482*r + 11721*g + 1181*b, 14);
+        v := TMathUtils.Asr(3482*r + 11721*g + 1181*b, 14);
+        luminances[offset + x] := v;
+        {$ifdef Debug}
+        w := v or (v shl 8);
+        img.Colors[x, y] := FPColor(w, w, w);
+        {$endif}
       end;
     end;
+    {$ifdef Debug}
+    Writer := TFPWriterBMP.Create;
+    img.SaveToFile('luminance.bmp', writer);
+    {$endif}
   finally
-    IntfImg.Free;
+    {$ifdef Debug}
+    writer.free;
+    img.free;
+    {$endif}
   end;
 end;
 
