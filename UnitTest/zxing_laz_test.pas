@@ -27,7 +27,7 @@ type
     class procedure AssertNotNull(aResult: TReadResult; msg:string); overload;
     class procedure AssertNull(aResult: TReadResult; msg:string); overload;
     class procedure AssertTrue(aCondition: boolean; msg: string); overload;
-    class procedure AssertEquals(Expected, Actual: string; ignorecase:boolean); overload;
+    class procedure AssertEquals(Expected, Actual: unicodestring; ignorecase:boolean); overload;
     class procedure AssertContains(str, substr: string; ignorecase:boolean);
   published
     procedure AllCode39;
@@ -79,8 +79,8 @@ begin
   AssertTrue(msg, aCondition);
 end;
 
-class procedure TZXingDelphiTest.AssertEquals(Expected, Actual: string;
-  ignorecase: boolean);
+class procedure TZXingDelphiTest.AssertEquals(Expected,Actual:unicodestring;
+  ignorecase:boolean);
 begin
   AssertEquals('---', Expected, Actual);
 end;
@@ -667,7 +667,7 @@ begin
   end;
 
   try
-    result := Decode('Phone.png', TBarcodeFormat.QR_CODE);
+    result := Decode('phone.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result ');
     AssertContains(result.Text, '077777777', false);
 
