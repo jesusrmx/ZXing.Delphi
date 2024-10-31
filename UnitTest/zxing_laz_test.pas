@@ -34,6 +34,7 @@ type
     procedure AllUpcA;
     procedure AllUpcE;
     procedure AllQRCode;
+    procedure All_PURE_QRCode;
   end;
 
 implementation
@@ -699,6 +700,50 @@ begin
     result := Decode('QRContainsHex10.png', TBarcodeFormat.QR_CODE);
     AssertNotNull(result, ' Nil result');
     AssertContains(result.Text, '140#104#20231123 09:00:00', false);
+  finally
+    FreeAndNil(result);
+  end;
+
+end;
+
+procedure TZXingDelphiTest.All_PURE_QRCode;
+var
+  result: TReadResult;
+  hints: TDictionary<TDecodeHintType, TObject>;
+begin
+
+  hints := TDictionary<TDecodeHintType, TObject>.Create();
+  hints.Add(TDecodeHintType.PURE_BARCODE, nil);
+
+  try
+    result := Decode('problem-qr-android 64bit.png', TBarcodeFormat.QR_CODE, hints);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Contains('http://sintest/'), 'QR code result Text Incorrect: ' + result.Text);
+
+  finally
+    FreeAndNil(result);
+  end;
+
+  hints := TDictionary<TDecodeHintType, TObject>.Create();
+  hints.Add(TDecodeHintType.PURE_BARCODE, nil);
+
+  try
+    result := Decode('beantest.jpg', TBarcodeFormat.QR_CODE, hints);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Contains('ivaservizi.'), 'QR code result Text Incorrect: ' + result.Text);
+
+    hints := TDictionary<TDecodeHintType, TObject>.Create();
+    hints.Add(TDecodeHintType.PURE_BARCODE, nil);
+
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('qr problem 1.jpg', TBarcodeFormat.QR_CODE, hints);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Contains('gov.it/'), 'QR code result Text Incorrect: ' + result.Text);
+
   finally
     FreeAndNil(result);
   end;
