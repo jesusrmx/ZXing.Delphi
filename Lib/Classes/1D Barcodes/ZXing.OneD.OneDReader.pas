@@ -59,10 +59,9 @@ type
     function doDecode(const image: TBinaryBitmap;
       hints: TDictionary<TDecodeHintType, TObject>): TReadResult;
     class procedure InitializeClass; static;
-  protected
+  public
     class var INTEGER_MATH_SHIFT: Integer;
     class var PATTERN_MATCH_RESULT_SCALE_FACTOR: Integer;
-
     /// <summary>
     /// Determines how closely a set of observed counts of runs of black/white values matches a given
     /// target pattern. This is reported as the ratio of the total variance from the expected pattern
@@ -77,7 +76,7 @@ type
     /// even more variance</returns>
     class function patternMatchVariance(counters, pattern: TIntArray;
       maxIndividualVariance: Integer): Integer; static;
-
+   protected
     /// <summary>
     /// Records the pattern in reverse.
     /// </summary>

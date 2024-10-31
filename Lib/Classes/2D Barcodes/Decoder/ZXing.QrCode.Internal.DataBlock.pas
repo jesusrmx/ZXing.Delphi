@@ -117,7 +117,7 @@ begin
     Inc(totalBlocks, ecBlock.Count);
 
   // Now establish DataBlocks of the appropriate size and number of data codewords
-  Result := nil; //TArray<TDataBlock>.Create();
+  Result := nil; //TArray<TDataBlock>.Create;
   SetLength(result, totalBlocks);
   numResultBlocks := 0;
   for ecBlock in ecBlockArray do

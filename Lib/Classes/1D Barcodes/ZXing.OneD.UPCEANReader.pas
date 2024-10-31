@@ -75,7 +75,7 @@ type
 
     class procedure InitializeClass; static;
     class procedure FinalizeClass; static;
-  protected
+  public
   class var
     // These two values are critical for determining how permissive the decoding will be.
     // We've arrived at these values through a lot of trial and error. Setting them any higher

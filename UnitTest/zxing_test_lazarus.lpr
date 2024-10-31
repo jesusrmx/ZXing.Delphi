@@ -4,7 +4,7 @@ program zxing_test_lazarus;
 
 uses
   Interfaces,
-  Classes, consoletestrunner, fpcunittestinsight, zxing_laz_test;
+  Classes, consoletestrunner, zxing_laz_test;
 
 type
 

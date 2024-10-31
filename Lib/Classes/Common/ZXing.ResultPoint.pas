@@ -61,12 +61,11 @@ type
   /// in place of the actual class constructor
   /// </summary>
   TResultPointHelpers = class
-    protected
+    public
        /// <summary>
        /// Returns the z component of the cross product between vectors BC and BA.
        /// </summary>
        class function crossProductZ(const pointA, pointB, pointC: IResultPoint): Single; static;
-    public
        /// <summary>
        /// Initializes a new instance of <see cref="TResultPoint"/> and returns
        /// its <see cref="IResultPoint"/> interface

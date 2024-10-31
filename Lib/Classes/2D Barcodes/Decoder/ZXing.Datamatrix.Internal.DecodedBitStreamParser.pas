@@ -363,7 +363,7 @@ begin
                       if (oneByte = 236) then
                       begin
                         // 05 Macro
-                        res.Append('[)>' + #$001E05 + #$001D);
+                        res.Append(RawbyteString('[)>' + #$001E05 + #$001D));
                         res.Insert(0, #$001E + #$0004);
                       end
                       else
@@ -371,7 +371,7 @@ begin
                         if (oneByte = 237) then
                         begin
                           // 06 Macro
-                          res.Append('[)>' + #$001E06 + #$001D);
+                          res.Append(RawbyteString('[)>' + #$001E06 + #$001D));
                           res.Insert(0, #$001E + #$0004);
                         end
                         else

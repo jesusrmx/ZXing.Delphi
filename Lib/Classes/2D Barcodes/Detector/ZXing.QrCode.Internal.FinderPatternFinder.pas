@@ -104,7 +104,7 @@ type
     average: Single;
   public
     constructor Create(f: Single);
-    function Compare(const Left, Right: IFinderPattern): Integer;
+    function Compare(constref Left, Right: IFinderPattern): Integer;
   end;
 
   TCenterComparator = class sealed(TInterfacedObject, IComparer<IFinderPattern>)
@@ -112,7 +112,7 @@ type
     average: Single;
   public
     constructor Create(f: Single);
-    function Compare(const Left, Right: IFinderPattern): Integer;
+    function Compare(constref Left, Right: IFinderPattern): Integer;
   end;
 
 implementation
@@ -917,7 +917,7 @@ end;
 
 { TFurthestFromAverageComparator }
 
-function TFurthestFromAverageComparator.Compare(const Left,
+function TFurthestFromAverageComparator.Compare(constref Left,
   Right: IFinderPattern): Integer;
 var
   dA, dB: Single;
@@ -945,7 +945,7 @@ end;
 
 { TCenterComparator }
 
-function TCenterComparator.Compare(const Left, Right: IFinderPattern): Integer;
+function TCenterComparator.Compare(constref Left, Right: IFinderPattern): Integer;
 var
   dA, dB: Single;
 begin
