@@ -35,6 +35,7 @@ type
     procedure AllUpcE;
     procedure AllQRCode;
     procedure All_PURE_QRCode;
+    procedure AllDataMatrixCode;
   end;
 
 implementation
@@ -750,6 +751,116 @@ begin
 
 end;
 
+procedure TZXingDelphiTest.AllDataMatrixCode;
+var
+  result: TReadResult;
+begin
+
+  try
+    result := Decode('DataMatrix_x.jpg', TBarcodeFormat.DATA_MATRIX);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Equals('~!@#$%^&*()_+}{POIUYTREWQASDFGHJKL:"?><MNBVCXZ`1234567890-=][poiuytrewqasdfghjkl;''/.,mnbvcxz|\'));
+  finally
+    FreeAndNil(result);
+  end;
+
+  // Result := Decode('DatamatrixHiddenInBottom.png', TBarcodeFormat.DATA_MATRIX);
+  // Assert.IsNotNull(result, ' Nil result ');
+  // Assert.IsTrue(result.Text.Equals('http://www.2D-IDent.com'),
+  // 'DataMatrix code result Text Incorrect: ' + result.Text);
+
+  try
+    result := Decode('dmc1.png', TBarcodeFormat.DATA_MATRIX);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Equals('http://www.2D-IDent.com'), 'DataMatrix code result Text Incorrect: ' + result.Text);
+  finally
+    FreeAndNil(result);
+  end;
+
+
+  // WRONG Encoding: How we can get the correct encoding (umlaut) here... :(
+  { result := Decode('dmc2.png', TBarcodeFormat.DATA_MATRIX);
+    Assert.IsNotNull(result, ' Nil result ');
+    Assert.IsTrue(result.Text.Equals('Beispiel f'#$FC'r Wikipedia'),
+    'DataMatrix code result Text Incorrect: ' + result.Text); }
+
+  try
+    result := Decode('dmc3.png', TBarcodeFormat.DATA_MATRIX);
+    AssertNotNull(result, ' Nil result ');
+    // 'WikipÚdia, l''encyclopÚdie libre':
+    // I escaped the above string because this source is not saved in UTF-8 format but in ascii, using the west european encoding
+    // if your don't have a west-european windows installation, all the editors you use would try to interpret the non-ascii characters
+    // whith the actual local charset. if this is the case you will not see the accented letters in this comment
+    // ASCII charset, you risk the compiler to generate the wrong utf8 string when compiling this source
+    // ES: 2016/12/9 not working here. Checking on text instead.
+    AssertTrue(result.Text.Contains('die libre'), 'DataMatrix code result Text Incorrect: ' + result.Text);
+  finally
+    FreeAndNil(result);
+  end;
+  // Not working yet
+  { result := Decode('dmc4.png', TBarcodeFormat.DATA_MATRIX);
+    Assert.IsNotNull(result, ' Nil result ');
+    Assert.IsTrue(result.Text.Equals('??'),
+    'DataMatrix code result Text Incorrect: ' + result.Text); }
+
+  try
+    result := Decode('dmc5.png', TBarcodeFormat.DATA_MATRIX);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Equals('Pause Hi-Tech' + #$0A + 'Tech tips for the non-geek' + #$0A + 'http://www.pausehitech.com'), 'DataMatrix code result Text Incorrect: ' + result.Text);
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('dmc6.bmp', TBarcodeFormat.DATA_MATRIX);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Equals('12345678'), 'DataMatrix code result Text Incorrect: ' + result.Text);
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('dmc7.png', TBarcodeFormat.DATA_MATRIX);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Equals('DataMatrix'), 'DataMatrix code result Text Incorrect: ' + result.Text);
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('dmc8.jpg', TBarcodeFormat.DATA_MATRIX);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Equals('http://www.labeljoy.com'), 'DataMatrix code result Text Incorrect: ' + result.Text);
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('dmc9.png', TBarcodeFormat.DATA_MATRIX);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Equals('Test123Test123Test123Test123Test123' + 'Test123Test123Test123Test123Test123' + 'Test123Test123Test123Test123Test123' + 'Test123Test123Test123Test123Test123' +
+      'Test123Test123Test123Test123Test123' + 'Test123Test123Test123Test123Test123' + 'Test123Test123Test123Test123Test123' + 'Test123Test123Test123Test123Test123' +
+      'Test123Test123Test123Test123Test123' + 'Test123Test123Test123Test123Test123' + 'Test123'), 'DataMatrix code result Text Incorrect: ' + result.Text);
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('dmc8.jpg', TBarcodeFormat.Auto);
+    AssertNotNull(result, ' Nil result ');
+    AssertTrue(result.Text.Equals('http://www.labeljoy.com'), 'DataMatrix code result Text Incorrect: ' + result.Text);
+  finally
+    FreeAndNil(result);
+  end;
+
+  try
+    result := Decode('Code128.png', TBarcodeFormat.DATA_MATRIX);
+    AssertNull(result, ' Should be Nil result ');
+  finally
+    FreeAndNil(result);
+  end;
+
+end;
 
 initialization
 
