@@ -19,7 +19,15 @@
 
 unit ZXing.Datamatrix.Internal.Detector;
 
-{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+{$IFDEF FPC}
+{$Mode Delphi}
+{$MACRO ON}
+{$if FPC_FULLVERSION >= 30300}
+{$DEFINE constref_:=const}
+{$ELSE}
+{$DEFINE constref_:=constref}
+{$ENDIF}
+{$ENDIF}
 
 interface
 
@@ -69,7 +77,7 @@ type
     TResultPointsAndTransitionsComparator = class sealed
       (TComparer<TResultPointsAndTransitions>)
     public
-      function Compare(constref o1, o2: TResultPointsAndTransitions)
+      function Compare(constref_ o1, o2: TResultPointsAndTransitions)
         : Integer; override;
     end;
 
@@ -626,7 +634,7 @@ begin
 end;
 
 function TDataMatrixDetector.TResultPointsAndTransitionsComparator.Compare
-  (constref o1, o2: TResultPointsAndTransitions): Integer;
+  (constref_ o1, o2: TResultPointsAndTransitions): Integer;
 begin
   Result := (o1.Transitions - o2.Transitions);
 end;

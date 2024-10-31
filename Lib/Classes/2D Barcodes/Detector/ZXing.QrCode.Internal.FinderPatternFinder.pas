@@ -19,7 +19,15 @@
 
 unit ZXing.QrCode.Internal.FinderPatternFinder;
 
-{$IFDEF FPC}{$Mode Delphi}{$ENDIF}
+{$IFDEF FPC}
+{$Mode Delphi}
+{$MACRO ON}
+{$if FPC_FULLVERSION >= 30301}
+{$DEFINE constref_:=const}
+{$ELSE}
+{$DEFINE constref_:=constref}
+{$ENDIF}
+{$ENDIF}
 
 interface
 
@@ -104,7 +112,7 @@ type
     average: Single;
   public
     constructor Create(f: Single);
-    function Compare(constref Left, Right: IFinderPattern): Integer;
+    function Compare(constref_ Left, Right: IFinderPattern): Integer;
   end;
 
   TCenterComparator = class sealed(TInterfacedObject, IComparer<IFinderPattern>)
@@ -112,7 +120,7 @@ type
     average: Single;
   public
     constructor Create(f: Single);
-    function Compare(constref Left, Right: IFinderPattern): Integer;
+    function Compare(constref_ Left, Right: IFinderPattern): Integer;
   end;
 
 implementation
@@ -917,7 +925,7 @@ end;
 
 { TFurthestFromAverageComparator }
 
-function TFurthestFromAverageComparator.Compare(constref Left,
+function TFurthestFromAverageComparator.Compare(constref_ Left,
   Right: IFinderPattern): Integer;
 var
   dA, dB: Single;
@@ -945,7 +953,7 @@ end;
 
 { TCenterComparator }
 
-function TCenterComparator.Compare(constref Left, Right: IFinderPattern): Integer;
+function TCenterComparator.Compare(constref_ Left, Right: IFinderPattern): Integer;
 var
   dA, dB: Single;
 begin
