@@ -384,7 +384,6 @@ var
   patternLength, width, x: Integer;
   isWhite: Boolean;
   counterPosition, patternStart: Integer;
-  curCounter: TIntArray;
 begin
   Result := nil;
 
@@ -413,13 +412,11 @@ begin
           break;
         end;
         Inc(patternStart, (counters[0] + counters[1]));
-        curCounter := nil; //TIntArray.Create();
-        SetLength(curCounter, Length(counters));
-        curCounter := copy(counters, 2, (patternLength - 2));
-        //TArray.Copy<Integer>(counters, curCounter, 2, 0, (patternLength - 2));
-        { curCounter[patternLength - 2] := 0;
-          curCounter[patternLength - 1] := 0; }
-        counters := curCounter;
+        // original java version
+        // System.arraycopy(counters, 2, counters, 0, counterPosition - 1);
+        Move(counters[2], counters[0], (patternLength - 2)*SizeOf(Integer));
+        counters[patternLength - 2] := 0;
+        counters[patternLength - 1] := 0;
         Dec(counterPosition);
       end
       else
