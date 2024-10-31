@@ -26,6 +26,7 @@ var
 
 implementation
 uses
+    fpImage, FPReadPNG, FPReadGIF, FPReadJPEG,
      ZXing.ReadResult,
      ZXing.BarcodeFormat,
      ZXing.ScanManager;
@@ -36,27 +37,27 @@ uses
 procedure TmainFrm.btnLoadFromFileClick(Sender: TObject);
 var  ReadResult: TReadResult;
      ScanManager: TScanManager;
-     bmp:Graphics.TBitmap; // just to be sure we are really using VCL bitmaps
+     img: TFPMemoryImage;
+     reader: TFPReaderJPEG;
      aFile: string;
 begin
-  aFile := ExpandFileName(ProgramDirectoryWithBundle + '../../UnitTest/Images/EAN_8690504009085-v2.png');
-  image.Picture.LoadFromFile(aFile);
-  //image.Picture.LoadFromFile(openDlg.FileName);
+  //aFile := ExpandFileName(ProgramDirectoryWithBundle + '../../UnitTest/Images/EAN_8690504009085-v2.png');
+  aFile := ExpandFileName(ProgramDirectoryWithBundle + '../../UnitTest/Images/beantest.jpg');
+
+  img := TFPMemoryImage.Create(0, 0);
+  img.LoadFromFile(aFile);
+  //img.LoadFromFile(openDlg.FileName);
   ReadResult := nil;
   ScanManager := nil;
-  bmp := nil;
   try
-    bmp:= TBitmap.Create;
-
-    bmp.assign (image.Picture.Graphic);
     ScanManager := TScanManager.Create(TBarcodeFormat.Auto, nil);
-    ReadResult := ScanManager.Scan(bmp);
+    ReadResult := ScanManager.Scan(img);
     if ReadResult<>nil then
       log.Lines.Text := ReadResult.text
     else
       log.Lines.Text := 'Unreadable!';
   finally
-  	bmp.Free;
+  	img.Free;
     ScanManager.Free;
     ReadResult.Free;
   end;
