@@ -126,9 +126,7 @@ begin
 
     right := localLuminances[x + 1] and $FF;
     // A simple -1 4 -1 box filter with a weight of 2.
-
-    luminance := (center shl 2) - left - right;
-    luminance := TMathUtils.Asr(luminance, 1);
+    luminance := ((center shl 2) - left - right) div 2;
     row[x] := (luminance < blackPoint);
     left := center;
     center := right;
